@@ -19,19 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----------------------------------------------------------------------------
-
-CONTENT NOTICE
-
-The Arabic dua text is from Munajaat-e-Maqbool by Maulana Ashraf Ali
-Thanwi (d. 1943), which is in the public domain.
-
-The Urdu and English translations are provided as part of this project;
-see assets/munajaat.json. The app is distributed free of charge as
-Sadqah Jaariyah.
-
-BUNDLED FONTS (each under the SIL Open Font License 1.1, see fonts/):
-- Digital Khatt IndoPak (c) 2024-2025 Amine Anane, Tarteel Inc.
-- Amiri
-- Noto Nastaliq Urdu
