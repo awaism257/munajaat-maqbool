@@ -288,5 +288,10 @@ html[data-theme="dark"] .support-btn { color: #101613; }
 .about-label { flex: 0 0 38%; color: var(--text-dim); }
 .about-value { flex: 1; }
 .support-box h3 { color: var(--gold); }
+
+/* Netlify OSS footer */
+#site-footer { text-align: center; padding: 20px 8px 28px; font-size: 0.75rem; }
+#site-footer a { color: var(--text-dim); text-decoration: none; }
+#site-footer a:hover { color: var(--primary); text-decoration: underline; }
 .about-foot { text-align: center; color: var(--text-dim); margin: 14px 0 0; }
 .about-gold { color: var(--gold); }
