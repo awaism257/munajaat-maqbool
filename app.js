@@ -214,6 +214,14 @@
     cred.appendChild(ci);
     cred.appendChild(el('span', 'chevron', '›'));
     w.appendChild(cred);
+
+    var nf = el('p', 'about-foot');
+    var nl = el('a', null, 'This site is powered by Netlify');
+    nl.href = 'https://www.netlify.com';
+    nl.target = '_blank';
+    nl.rel = 'noopener noreferrer';
+    nf.appendChild(nl);
+    w.appendChild(nf);
     return w;
   }
 
