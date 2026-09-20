@@ -1,53 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Munajaat Maqbool — Privacy Policy</title>
+<meta name="description" content="Privacy policy for Munajaat Maqbool — no data collection, no tracking, no ads, fully offline.">
 <style>
-  body { font-family: Georgia, 'Times New Roman', serif; max-width: 680px;
-         margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #222; }
-  h1 { color: #1B5E20; font-size: 1.6em; }
-  h2 { color: #1B5E20; font-size: 1.15em; margin-top: 1.6em; }
-  .updated { color: #666; font-size: 0.9em; }
+  :root {
+    --bg: #FBFDF7; --card: #F3F0EA; --primary: #1B5E20; --gold: #B28704;
+    --text: #1A1C19; --text-dim: #5a5c58;
+    --shadow: 0 2px 8px rgba(27,94,32,.08), 0 1px 3px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #101613; --card: #2A2622; --primary: #8ECB87; --gold: #D4A72C;
+            --text: #E8E6E3; --text-dim: #9a9c98;
+            --shadow: 0 2px 8px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.25); }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6; min-height: 100vh; position: relative;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: url('assets/bg_pattern.png') repeat; background-size: 512px;
+    opacity: .35; pointer-events: none; z-index: 0;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 96px; position: relative; z-index: 1;
+          padding-top: calc(24px + env(safe-area-inset-top, 0px));
+          padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  header { text-align: center; padding: 24px 8px 8px; }
+  header img { width: 96px; height: 96px; border-radius: 24px; box-shadow: var(--shadow); }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 2rem; color: var(--primary);
+       letter-spacing: .3px; margin-top: 14px; }
+  .subtitle { color: var(--gold); font-style: italic; font-family: Georgia, 'Times New Roman', serif; margin-top: 2px; }
+  .updated { color: var(--text-dim); margin-top: 10px; font-size: .9rem; }
+  .divider { height: 3px; background: var(--primary); border-radius: 2px; margin: 18px 0; }
+  .card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow);
+          padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-family: Georgia, 'Times New Roman', serif; font-size: .8rem; letter-spacing: 1.5px;
+             color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  .card p { margin: 8px 0; }
+  .foot { text-align: center; margin-top: 8px; font-size: .9rem; }
+  .foot a { color: var(--primary); }
 </style>
 </head>
 <body>
-<h1>Privacy Policy — Munajaat Maqbool</h1>
-<p class="updated">Last updated: 7 September 2026</p>
+<div class="wrap">
 
-<p>Munajaat Maqbool ("the app") is a free devotional app providing the
-supplications of Munajaat-e-Maqbool in Arabic with Urdu and English
-translations. It is distributed free of charge.</p>
+  <header>
+    <img src="assets/icon-192.png" alt="Munajaat Maqbool icon">
+    <h1>Privacy Policy</h1>
+    <p class="subtitle">Munajaat Maqbool</p>
+    <p class="updated">Last updated: 7 September 2026</p>
+  </header>
 
-<h2>Data collection</h2>
-<p><strong>The app does not collect, store, transmit, or share any personal
-data.</strong> It works fully offline and does not connect to the internet.</p>
+  <div class="divider"></div>
 
-<h2>What stays on your device</h2>
-<p>Your bookmarks, font-size choices, theme choice, and translation
-visibility settings are stored locally on your device only. They never
-leave your device and are deleted if you uninstall the app or clear its
-data.</p>
+  <div class="card">
+    <h2>Overview</h2>
+    <p>Munajaat Maqbool ("the app") is a free devotional app providing the
+       supplications of Munajaat-e-Maqbool in Arabic with Urdu and English
+       translations. It is distributed free of charge.</p>
+  </div>
 
-<h2>No analytics or tracking</h2>
-<p>The app and website do not use any analytics or tracking services.
-Nothing about your visit or usage is recorded or sent anywhere.</p>
+  <div class="card">
+    <h2>Data collection</h2>
+    <p><strong>The app does not collect, store, transmit, or share any personal
+       data.</strong> It works fully offline and does not connect to the internet.</p>
+  </div>
 
-<h2>No accounts or ads</h2>
-<p>The app requires no sign-in, contains no advertisements, and does not use
-any tracking for advertising purposes.</p>
+  <div class="card">
+    <h2>What stays on your device</h2>
+    <p>Your bookmarks, font-size choices, theme choice, and translation
+       visibility settings are stored locally on your device only. They never
+       leave your device and are deleted if you uninstall the app or clear its
+       data.</p>
+  </div>
 
-<h2>Children</h2>
-<p>The app is not directed at children and does not knowingly collect any
-information from anyone, of any age.</p>
+  <div class="card">
+    <h2>No analytics or tracking</h2>
+    <p>The app and website do not use any analytics or tracking services.
+       Nothing about your visit or usage is recorded or sent anywhere.</p>
+  </div>
 
-<h2>Changes</h2>
-<p>If this policy changes, the updated version will be posted at this
-address.</p>
+  <div class="card">
+    <h2>No accounts or ads</h2>
+    <p>The app requires no sign-in, contains no advertisements, and does not use
+       any tracking for advertising purposes.</p>
+  </div>
 
-<h2>Contact</h2>
-<p>If you have questions about this policy, you can contact the developer
-using the contact email address shown on the app's Google Play listing.</p>
+  <div class="card">
+    <h2>Children</h2>
+    <p>The app is not directed at children and does not knowingly collect any
+       information from anyone, of any age.</p>
+  </div>
+
+  <div class="card">
+    <h2>Changes</h2>
+    <p>If this policy changes, the updated version will be posted at this
+       address.</p>
+  </div>
+
+  <div class="card">
+    <h2>Contact</h2>
+    <p>If you have questions about this policy, you can contact the developer
+       using the contact email address shown on the app's Google Play listing.</p>
+  </div>
+
+  <p class="foot"><a href="./support.html">← Project page</a></p>
+
+</div>
 </body>
 </html>
