@@ -293,6 +293,26 @@ html[data-theme="dark"] .support-btn { color: #101613; }
 .about-gold { color: var(--gold); }
 
 /* Netlify OSS footer */
-#site-footer { text-align: center; padding: 20px 8px 28px; font-size: 0.75rem; }
-#site-footer a { color: var(--text-dim); text-decoration: none; }
-#site-footer a:hover { color: var(--primary); text-decoration: underline; }
+#site-footer { text-align: center; padding: 20px 8px calc(28px + env(safe-area-inset-bottom, 0px)); font-size: 0.75rem; }
+#site-footer a { color: var(--text-dim); text-decoration: none; opacity: .85; }
+#site-footer a:hover { color: var(--gold); text-decoration: underline; opacity: 1; }
+#nf-pill {
+  position: fixed;
+  right: calc(14px + env(safe-area-inset-right, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text-dim);
+  border: 1px solid rgba(178, 135, 4, 0.35);
+  box-shadow: var(--shadow);
+  font-size: 0.72rem;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity .2s, color .2s;
+}
+#nf-pill:hover { opacity: 1; color: var(--gold); }
+#nf-pill svg { width: 13px; height: 13px; flex: none; }
+html[data-theme="dark"] #nf-pill { border-color: rgba(212, 176, 64, 0.3); }
