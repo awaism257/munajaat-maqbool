@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "title": "Munajaat-e-Maqbool",
+  "days": [
+    { "id": "saturday", "title": "Saturday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] },
+    { "id": "sunday", "title": "Sunday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] },
+    { "id": "monday", "title": "Monday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] },
+    { "id": "tuesday", "title": "Tuesday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] },
+    { "id": "wednesday", "title": "Wednesday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] },
+    { "id": "thursday", "title": "Thursday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] },
+    { "id": "friday", "title": "Friday", "items": [ { "n": 1, "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "english": "In the name of Allah, the Most Gracious, the Most Merciful.", "footnotes": [] } ] }
+  ]
+}

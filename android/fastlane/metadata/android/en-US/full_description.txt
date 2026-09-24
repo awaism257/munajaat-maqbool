@@ -1,0 +1,3 @@
+Munajaat Maqbool is a clean, modern, offline reader for the seven daily manzil sections of Munajaat-e-Maqbool. It presents each numbered Arabic supplication together with a fresh, independent English translation made from the Arabic source and reviewed against the public-domain Urdu edition, with 91 source and instruction footnotes.
+
+Features include full-text search, bookmarks, adjustable Arabic and English text sizes, dark mode, and simple day-by-day navigation. The app contains no ads, analytics, accounts, tracking, or internet requirement.

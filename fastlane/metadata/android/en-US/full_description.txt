@@ -1,0 +1,19 @@
+Munajaat Maqbool is a clean, modern, offline reader for Munajaat-e-Maqbool (The Accepted Whispers), the well-known collection of Qur'anic supplications compiled by Mawlana Ashraf Ali Thanawi, arranged as seven day-by-day sections from Sunday to Saturday.
+
+Each of the 195 numbered supplications is presented in Arabic together with its Urdu translation (checked against the printed booklet) and a fresh, independent English translation made from the Arabic source, plus 200 source and instruction footnotes.
+
+Features:
+
+- Complete trilingual text: Arabic, Urdu and English, each language can be shown or hidden as you prefer
+- Seven daily sections, 195 supplications in all
+- Full-text search across all three languages
+- Bookmarks for your favourite supplications
+- Adjustable Arabic, Urdu and English text sizes
+- Dark mode with a calm, reading-friendly design
+- Works entirely offline: the app does not even request the internet permission
+
+The app is free and open source (MIT licence). It contains no ads, no analytics, no accounts and no tracking of any kind. It is built as a non-commercial project; an optional Ko-fi link towards hosting and development costs is available on the project page.
+
+Web version: https://munajaat-maqbool.netlify.app
+Project page: https://awaism257.github.io/munajaat-maqbool/support.html
+Source code: https://github.com/awaism257/munajaat-maqbool
