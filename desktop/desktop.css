@@ -1,0 +1,35 @@
+/* Desktop overlay — applied only in the Flatpak bundle (loaded after styles.css).
+   The live PWA at munajaat-maqbool.netlify.app is untouched. */
+
+/* Hide the website attribution footer inside the desktop app window */
+#site-footer { display: none; }
+
+/* Hide the mobile-only install banners definitively (already UA-gated, belt and braces) */
+#ios-banner, #android-banner { display: none !important; }
+
+/* Text selection in brand colours */
+::selection { background: rgba(178, 135, 4, 0.28); }
+
+/* Keyboard focus affordances for desktop navigation */
+.icon-btn:focus-visible,
+.day-card:focus-visible,
+.result-card:focus-visible,
+.ref-toggle:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Desktop pointer cursor on clickable rows */
+.day-card, .result-card, .ref-toggle { cursor: pointer; }
+
+/* Wider, calmer reading column on large monitors */
+@media (min-width: 1100px) {
+  .wrap { max-width: 780px; padding-top: 8px; }
+  .home-header { padding-top: 28px; }
+  .home-header h1 { font-size: 2.1rem; }
+  .card { padding: 24px 28px; }
+  .arabic { font-size: calc(2.0rem * var(--arabic-scale, 1)); }
+}

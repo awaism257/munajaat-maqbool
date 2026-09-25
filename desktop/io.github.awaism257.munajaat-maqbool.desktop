@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Munajaat Maqbool
+GenericName=Supplication Reader
+Comment=Daily Munajaat-e-Maqbool supplications in Arabic, Urdu and English, fully offline
+Exec=munajaat-maqbool
+Icon=io.github.awaism257.munajaat-maqbool
+Terminal=false
+Categories=Utility;Education;
+Keywords=dua;supplication;munajaat;islam;quran;prayer;
+StartupNotify=true
+StartupWMClass=munajaat-maqbool
