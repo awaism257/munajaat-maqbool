@@ -13,8 +13,8 @@ android {
         applicationId = "org.munajaat.maqbool"
         minSdk = 24
         targetSdk = 37
-        versionCode = 19
-        versionName = "1.1.8"
+        versionCode = 20
+        versionName = "1.1.9"
     }
 
     buildTypes {
