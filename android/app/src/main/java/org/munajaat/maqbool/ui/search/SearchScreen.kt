@@ -65,7 +65,7 @@ fun SearchScreen(
                     value = query,
                     onValueChange = { query = it },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    placeholder = { Text("Search Arabic or English…") },
+                    placeholder = { Text("Search Arabic, Urdu or English…") },
                     singleLine = true,
                     trailingIcon = {
                         if (query.isNotEmpty()) {
