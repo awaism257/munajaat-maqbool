@@ -50,29 +50,35 @@
 
   <screenshots>
     <screenshot type="default">
-      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.7/desktop/screenshots/01-home.png</image>
+      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.8/desktop/screenshots/01-home.png</image>
       <caption>Seven day-by-day sections of supplications</caption>
     </screenshot>
     <screenshot>
-      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.7/desktop/screenshots/02-reading-trilingual.png</image>
+      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.8/desktop/screenshots/02-reading-trilingual.png</image>
       <caption>Arabic with Urdu and English translations</caption>
     </screenshot>
     <screenshot>
-      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.7/desktop/screenshots/03-dark-theme.png</image>
+      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.8/desktop/screenshots/03-dark-theme.png</image>
       <caption>Dark theme, following the system appearance</caption>
     </screenshot>
     <screenshot>
-      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.7/desktop/screenshots/04-search.png</image>
+      <image width="1920" height="1080">https://raw.githubusercontent.com/awaism257/munajaat-maqbool/desktop-v1.1.8/desktop/screenshots/04-search.png</image>
       <caption>Full-text search across all 195 supplications</caption>
     </screenshot>
   </screenshots>
 
   <releases>
+    <release version="1.1.8" date="2026-09-26" type="stable">
+      <description>
+        <p>Content update matching the Android app (v1.1.8) and the web app: a translation sweep with English refinements across the week, three Arabic text fixes, and the Urdu translation of Thursday supplication 15 completed.</p>
+      </description>
+      <url>https://github.com/awaism257/munajaat-maqbool/releases/tag/desktop-v1.1.8</url>
+    </release>
     <release version="1.1.7" date="2026-09-25" type="stable">
       <description>
         <p>First Linux desktop release. Identical content to the Android app (v1.1.7) and the web app: 195 supplications in Arabic, Urdu and English, fully offline.</p>
       </description>
-      <url>https://github.com/awaism257/munajaat-maqbool/releases/tag/desktop-v1.1.7</url>
+      <url>https://github.com/awaism257/munajaat-maqbool/releases/tag/desktop-v1.1.8</url>
     </release>
   </releases>
 </component>
