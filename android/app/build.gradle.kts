@@ -13,17 +13,14 @@ android {
         applicationId = "org.munajaat.maqbool"
         minSdk = 24
         targetSdk = 37
-        versionCode = 18
-        versionName = "1.1.7"
+        versionCode = 19
+        versionName = "1.1.8"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Required for F-Droid reproducible builds: the embedded VCS info
-            // (commit hash / clone path) is environment-specific.
-            vcsInfo.include = false
         }
     }
 
@@ -36,12 +33,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    dependenciesInfo {
-        // Required for F-Droid reproducible builds (fdroiddata#3330):
-        // the embedded dependency metadata is build-environment specific.
-        includeInApk = false
-        includeInBundle = false
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.11"
