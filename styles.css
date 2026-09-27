@@ -24,17 +24,17 @@
   font-display: swap;
 }
 
-/* Light: mushaf paper theme (shared family palette with JustQuran) */
+/* Light: Munajaat's own background kept (green-tinted white + original pattern) */
 :root {
-  --bg: rgb(243, 236, 216);          /* paper */
+  --bg: #FBFDF7;
   --card: rgb(255, 255, 255);
   --primary: #1B5E20;                /* Munajaat green brand accent */
-  --gold: rgb(158, 124, 62);         /* frame gold */
-  --text: rgb(38, 32, 22);           /* ink */
-  --text-dim: rgba(38, 32, 22, 0.55);
-  --pattern-img: url('assets/tiles-light.png');
-  --pattern-opacity: 0.5;
-  --shadow: 0 3px 12px rgba(38, 32, 22, 0.08);
+  --gold: #B28704;
+  --text: #1A1C19;
+  --text-dim: #5a5c58;
+  --pattern-img: url('assets/bg_pattern.png');
+  --pattern-opacity: 0.35;
+  --shadow: 0 2px 8px rgba(27, 94, 32, 0.08), 0 1px 3px rgba(0,0,0,0.06);
 }
 html[data-theme="dark"] {
   --bg: rgb(16, 22, 19);             /* identical to JustQuran dark */

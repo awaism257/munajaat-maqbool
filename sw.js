@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'munajaat-maqbool-v35';
+const CACHE_VERSION = 'munajaat-maqbool-v36';
 const PRECACHE = [
   './',
   'index.html',
@@ -7,7 +7,6 @@ const PRECACHE = [
   'manifest.webmanifest',
   'assets/munajaat.json',
   'assets/bg_pattern.png',
-  'assets/tiles-light.png',
   'assets/icon-192.png',
   'assets/icon-512.png',
   'assets/icon-maskable-192.png',

@@ -37,7 +37,7 @@
     var dark = settings.dark === null ? (mq ? mq.matches : false) : settings.dark;
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     var mc = document.querySelector('meta[name="theme-color"]');
-    if (mc) mc.setAttribute('content', dark ? '#101613' : '#F3ECD8');
+    if (mc) mc.setAttribute('content', dark ? '#101613' : '#1B5E20');
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (settings.dark === null) applyTheme(); });
 
