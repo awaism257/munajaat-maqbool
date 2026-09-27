@@ -1,6 +1,11 @@
 @font-face {
   font-family: 'Digital Khatt IndoPak';
-  src: url('fonts/DigitalKhattIndoPak.woff2') format('woff2');
+  src: url('fonts/digitalkhatt-indopak-v2.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Amiri Quran';
+  src: url('fonts/amiri-quran.ttf') format('truetype');
   font-display: swap;
 }
 @font-face {
@@ -13,26 +18,34 @@
   src: url('fonts/NotoNastaliqUrdu-Regular.ttf') format('truetype');
   font-display: swap;
 }
+@font-face {
+  font-family: 'Noto Naskh Arabic';
+  src: url('fonts/noto-naskh.ttf') format('truetype');
+  font-display: swap;
+}
 
+/* Light: mushaf paper theme (shared family palette with JustQuran) */
 :root {
-  --bg: #FBFDF7;
-  --card: #F3F0EA;
-  --primary: #1B5E20;
-  --gold: #B28704;
-  --text: #1A1C19;
-  --text-dim: #5a5c58;
-  --pattern-opacity: 0.35;
-  --shadow: 0 2px 8px rgba(27, 94, 32, 0.08), 0 1px 3px rgba(0,0,0,0.06);
+  --bg: rgb(243, 236, 216);          /* paper */
+  --card: rgb(255, 255, 255);
+  --primary: #1B5E20;                /* Munajaat green brand accent */
+  --gold: rgb(158, 124, 62);         /* frame gold */
+  --text: rgb(38, 32, 22);           /* ink */
+  --text-dim: rgba(38, 32, 22, 0.55);
+  --pattern-img: url('assets/tiles-light.png');
+  --pattern-opacity: 0.5;
+  --shadow: 0 3px 12px rgba(38, 32, 22, 0.08);
 }
 html[data-theme="dark"] {
-  --bg: #101613;
-  --card: #2A2622;
+  --bg: rgb(16, 22, 19);             /* identical to JustQuran dark */
+  --card: rgb(43, 44, 47);
   --primary: #8ECB87;
-  --gold: #D4B040;
-  --text: #E3E3DE;
-  --text-dim: #a8aaa4;
+  --gold: rgb(201, 166, 88);
+  --text: rgb(240, 235, 220);        /* cream */
+  --text-dim: rgba(240, 235, 220, 0.55);
+  --pattern-img: url('assets/bg_pattern.png');
   --pattern-opacity: 0.12;
-  --shadow: 0 2px 8px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.3);
+  --shadow: none;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,8 +65,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: url('assets/bg_pattern.png') repeat;
-  background-size: 512px;
+  background: var(--pattern-img) repeat;
   opacity: var(--pattern-opacity);
   pointer-events: none;
   z-index: 0;
@@ -141,7 +153,7 @@ html[data-theme="dark"] .num-badge { color: #101613; }
 .dua-actions .icon-btn { padding: 6px; }
 
 .arabic {
-  font-family: 'Digital Khatt IndoPak', 'Amiri', serif;
+  font-family: 'Digital Khatt IndoPak', 'Amiri Quran', 'Amiri', 'Noto Naskh Arabic', serif;
   direction: rtl; text-align: right;
   font-size: calc(1.9rem * var(--arabic-scale, 1)); line-height: calc(2.1 * var(--arabic-lh, 1));
   margin: 14px 0 10px;
@@ -149,7 +161,7 @@ html[data-theme="dark"] .num-badge { color: #101613; }
 .urdu {
   font-family: 'Noto Nastaliq Urdu', serif;
   direction: rtl; text-align: right;
-  font-size: calc(1.25rem * var(--text-scale, 1)); line-height: 2.4;
+  font-size: calc(1.25rem * var(--urdu-scale, 1)); line-height: 2.4;
   margin: 10px 0;
 }
 .english { text-align: left; margin: 10px 0; font-size: calc(1rem * var(--text-scale, 1)); line-height: 1.7; }

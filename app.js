@@ -19,6 +19,7 @@
   if (typeof settings.showEnglish !== 'boolean') settings.showEnglish = true;
   if (typeof settings.fontArabic !== 'number') settings.fontArabic = 1;
   if (typeof settings.fontText !== 'number') settings.fontText = 1;
+  if (typeof settings.fontUrdu !== 'number') settings.fontUrdu = 1;
   if (typeof settings.lineArabic !== 'number') settings.lineArabic = 1;
   if (typeof settings.showTransliteration !== 'boolean') settings.showTransliteration = false;
   if (typeof settings.fontTranslit !== 'number') settings.fontTranslit = 1;
@@ -36,7 +37,7 @@
     var dark = settings.dark === null ? (mq ? mq.matches : false) : settings.dark;
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     var mc = document.querySelector('meta[name="theme-color"]');
-    if (mc) mc.setAttribute('content', dark ? '#101613' : '#1B5E20');
+    if (mc) mc.setAttribute('content', dark ? '#101613' : '#F3ECD8');
   }
   if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (settings.dark === null) applyTheme(); });
 
@@ -45,6 +46,7 @@
     var st = document.documentElement.style;
     st.setProperty('--arabic-scale', settings.fontArabic);
     st.setProperty('--text-scale', settings.fontText);
+    st.setProperty('--urdu-scale', settings.fontUrdu);
     st.setProperty('--arabic-lh', settings.lineArabic);
     st.setProperty('--translit-scale', settings.fontTranslit);
   }
@@ -411,7 +413,8 @@
     }
 
     card.appendChild(sliderRow('Arabic text size', 'fontArabic'));
-    card.appendChild(sliderRow('Translation text size', 'fontText'));
+    card.appendChild(sliderRow('Urdu text size', 'fontUrdu'));
+    card.appendChild(sliderRow('English text size', 'fontText'));
     card.appendChild(sliderRow('Arabic line spacing', 'lineArabic'));
     card.appendChild(sliderRow('Transliteration text size', 'fontTranslit'));
     w.appendChild(card);
@@ -454,7 +457,7 @@
     /* Fonts card */
     var fonts = el('div', 'card credits');
     fonts.appendChild(el('div', 'about-heading', 'FONTS'));
-    fonts.appendChild(el('p', null, 'Digital Khatt IndoPak (© 2024-2025 Amine Anane, Tarteel Inc.) · Amiri · Noto Nastaliq Urdu — SIL Open Font License'));
+    fonts.appendChild(el('p', null, 'Digital Khatt IndoPak v2 (© 2024-2025 Amine Anane, Tarteel Inc.) · Amiri Quran · Noto Nastaliq Urdu · Noto Naskh Arabic — SIL Open Font License'));
     w.appendChild(fonts);
 
     /* Support card */

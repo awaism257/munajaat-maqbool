@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'munajaat-maqbool-v34';
+const CACHE_VERSION = 'munajaat-maqbool-v35';
 const PRECACHE = [
   './',
   'index.html',
@@ -7,13 +7,16 @@ const PRECACHE = [
   'manifest.webmanifest',
   'assets/munajaat.json',
   'assets/bg_pattern.png',
+  'assets/tiles-light.png',
   'assets/icon-192.png',
   'assets/icon-512.png',
   'assets/icon-maskable-192.png',
   'assets/icon-maskable-512.png',
-  'fonts/DigitalKhattIndoPak.woff2',
+  'fonts/digitalkhatt-indopak-v2.otf',
+  'fonts/amiri-quran.ttf',
   'fonts/Amiri-Regular.ttf',
-  'fonts/NotoNastaliqUrdu-Regular.ttf'
+  'fonts/NotoNastaliqUrdu-Regular.ttf',
+  'fonts/noto-naskh.ttf'
 ];
 
 self.addEventListener('install', (event) => {
