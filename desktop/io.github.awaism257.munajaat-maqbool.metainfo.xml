@@ -8,7 +8,7 @@
   <launchable type="desktop-id">io.github.awaism257.munajaat-maqbool.desktop</launchable>
 
   <description>
-    <p>Munajaat Maqbool is a clean, modern, fully offline reader for Munajaat-e-Maqbool (The Accepted Whispers), the well-known collection of Qur'anic supplications compiled by Mawlana Ashraf Ali Thanawi, arranged as seven day-by-day sections from Sunday to Saturday.</p>
+    <p>Munajaat Maqbool is a clean, modern, fully offline reader for Munajaat-e-Maqbool (The Accepted Whispers), the well-known collection of Qur'anic supplications compiled by Mawlana Ashraf Ali Thanawi, arranged as seven day-by-day sections from Saturday to Friday.</p>
     <p>Each of the 195 numbered supplications is presented in Arabic together with its Urdu translation (checked against the printed booklet) and a fresh, independent English translation made from the Arabic source, plus 200 source and instruction footnotes.</p>
     <p>Features: trilingual text with per-language visibility, full-text search, bookmarks, adjustable text sizes and line spacing, and a dark theme that follows the system. The application works entirely offline and never uses the network. Free and open source (MIT licence) — no ads, no analytics, no accounts, no tracking.</p>
   </description>
@@ -68,6 +68,12 @@
   </screenshots>
 
   <releases>
+    <release version="1.2.0" date="2026-09-30" type="stable">
+      <description>
+        <p>Content update matching Android and Web v1.2.0: English clarification on hot-day drinking (Sunday 13), humble/miskin supplication context (Tuesday 19), and Day of Judgment context (Wednesday 3).</p>
+      </description>
+      <url>https://github.com/awaism257/munajaat-maqbool/releases/tag/v1.2.0</url>
+    </release>
     <release version="1.1.8" date="2026-09-26" type="stable">
       <description>
         <p>Content update matching the Android app (v1.1.8) and the web app: a translation sweep with English refinements across the week, three Arabic text fixes, and the Urdu translation of Thursday supplication 15 completed.</p>

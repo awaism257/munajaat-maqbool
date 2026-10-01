@@ -11,3 +11,7 @@ Thumbs.db
 
 # Local archives / backups
 *.zip
+
+# Build folders
+desktop/build/
+build/

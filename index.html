@@ -15,6 +15,14 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="stylesheet" href="styles.css">
+<script>
+  if (location.protocol === 'app:' || window.navigator.userAgent.indexOf('MunajaatDesktop') !== -1) {
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'desktop.css';
+    document.head.appendChild(l);
+  }
+</script>
 </head>
 <body>
 <div id="app" aria-live="polite"></div>

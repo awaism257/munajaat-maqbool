@@ -1,0 +1,26 @@
+app-id: io.github.awaism257.munajaat-maqbool
+runtime: org.kde.Platform
+runtime-version: '6.8'
+sdk: org.kde.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '6.8'
+command: munajaat-maqbool
+
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=ipc
+  - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
+
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+
+modules:
+  - name: munajaat-maqbool
+    buildsystem: cmake-ninja
+    subdir: desktop
+    sources:
+      - type: git
+        url: https://github.com/awaism257/munajaat-maqbool.git
+        tag: desktop-v1.2.0

@@ -491,6 +491,135 @@
     return w;
   }
 
+  /* ================= Desktop Layout & Sidebar ================= */
+  function showShortcutsModal() {
+    showToast('Shortcuts: 1-7 (Days), / (Search), Esc (Home), J/K (Scroll Dua), T (Theme)');
+  }
+
+  function scrollToNextDua(cards, direction) {
+    if (!cards || cards.length === 0) return;
+    var target = null;
+    if (direction > 0) {
+      for (var i = 0; i < cards.length; i++) {
+        var rect = cards[i].getBoundingClientRect();
+        if (rect.top > 60) { target = cards[i]; break; }
+      }
+    } else {
+      for (var j = cards.length - 1; j >= 0; j--) {
+        var r = cards[j].getBoundingClientRect();
+        if (r.top < -60) { target = cards[j]; break; }
+      }
+    }
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function buildDesktopSidebar() {
+    var aside = el('aside', 'desktop-sidebar');
+
+    var brand = el('a', 'sidebar-brand');
+    brand.href = '#/';
+    var logo = el('img', 'sidebar-logo');
+    logo.src = 'assets/icon-192.png';
+    logo.alt = 'Munajaat Maqbool Logo';
+    brand.appendChild(logo);
+
+    var titles = el('div', 'sidebar-titles');
+    titles.appendChild(el('div', 'sidebar-title', 'Munajaat Maqbool'));
+    titles.appendChild(el('div', 'sidebar-sub', 'The Accepted Whispers'));
+    brand.appendChild(titles);
+    aside.appendChild(brand);
+
+    var nav = el('nav', 'sidebar-nav');
+    var secDays = el('div', 'nav-section-label', 'Daily Sections');
+    nav.appendChild(secDays);
+
+    var dayLabels = [
+      { id: 'saturday', num: '1', name: 'Saturday' },
+      { id: 'sunday', num: '2', name: 'Sunday' },
+      { id: 'monday', num: '3', name: 'Monday' },
+      { id: 'tuesday', num: '4', name: 'Tuesday' },
+      { id: 'wednesday', num: '5', name: 'Wednesday' },
+      { id: 'thursday', num: '6', name: 'Thursday' },
+      { id: 'friday', num: '7', name: 'Friday' }
+    ];
+
+    dayLabels.forEach(function (d) {
+      var a = el('a', 'nav-item nav-day');
+      a.href = '#/day/' + d.id;
+      a.setAttribute('data-nav', 'day-' + d.id);
+      var badge = el('span', 'nav-badge', d.num);
+      var span = el('span', 'nav-text', d.name);
+      a.appendChild(badge);
+      a.appendChild(span);
+      nav.appendChild(a);
+    });
+
+    var secMenu = el('div', 'nav-section-label', 'Navigation');
+    nav.appendChild(secMenu);
+
+    var menuItems = [
+      { hash: '#/search', key: 'search', label: 'Search', icon: ICONS.search },
+      { hash: '#/bookmarks', key: 'bookmarks', label: 'Bookmarks', icon: ICONS.bookmarkOutline },
+      { hash: '#/settings', key: 'settings', label: 'Settings', icon: ICONS.settings },
+      { hash: '#/credits', key: 'credits', label: 'Credits', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' }
+    ];
+
+    menuItems.forEach(function (m) {
+      var a = el('a', 'nav-item');
+      a.href = m.hash;
+      a.setAttribute('data-nav', m.key);
+      var ico = el('span', 'nav-icon');
+      ico.innerHTML = m.icon;
+      var span = el('span', 'nav-text', m.label);
+      a.appendChild(ico);
+      a.appendChild(span);
+      nav.appendChild(a);
+    });
+
+    aside.appendChild(nav);
+
+    var foot = el('div', 'sidebar-foot');
+    var themeBtn = el('button', 'sidebar-btn', '🌓 Theme');
+    themeBtn.type = 'button';
+    themeBtn.title = 'Toggle Dark / Light (T)';
+    themeBtn.addEventListener('click', function () {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      settings.dark = !isDark;
+      saveSettings();
+      applyTheme();
+      showToast(settings.dark ? 'Dark theme enabled' : 'Light theme enabled');
+    });
+    foot.appendChild(themeBtn);
+
+    var helpBtn = el('button', 'sidebar-btn', '⌨ Shortcuts');
+    helpBtn.type = 'button';
+    helpBtn.title = 'Keyboard Shortcuts (?)';
+    helpBtn.addEventListener('click', showShortcutsModal);
+    foot.appendChild(helpBtn);
+
+    aside.appendChild(foot);
+    return aside;
+  }
+
+  function updateDesktopSidebarActive(parts) {
+    var items = document.querySelectorAll('.desktop-sidebar .nav-item');
+    items.forEach(function (it) { it.classList.remove('active'); });
+    var activeKey = null;
+    if (parts.length === 0) {
+      // Home
+    } else if (parts[0] === 'day' && parts[1]) {
+      activeKey = 'day-' + parts[1];
+    } else if (parts[0]) {
+      activeKey = parts[0];
+    }
+    if (activeKey) {
+      var activeEl = document.querySelector('.desktop-sidebar [data-nav="' + activeKey + '"]');
+      if (activeEl) activeEl.classList.add('active');
+    }
+  }
+
   /* ================= Router ================= */
   function route() {
     if (!DATA) return;
@@ -504,10 +633,93 @@
     else if (parts[0] === 'settings') view = renderSettings();
     else if (parts[0] === 'credits') view = renderCredits();
     else view = renderHome();
-    app.innerHTML = '';
-    app.appendChild(view);
+
+    var container = document.getElementById('layout-container');
+    if (!container) {
+      app.innerHTML = '';
+      container = el('div', 'layout-container');
+      container.id = 'layout-container';
+      var sidebar = buildDesktopSidebar();
+      container.appendChild(sidebar);
+      var mainContent = el('main', 'main-content');
+      mainContent.id = 'main-content';
+      container.appendChild(mainContent);
+      app.appendChild(container);
+    }
+    var main = document.getElementById('main-content');
+    main.innerHTML = '';
+    main.appendChild(view);
+    updateDesktopSidebarActive(parts);
+
     if (!(parts[0] === 'day' && parts[2])) window.scrollTo(0, 0);
   }
+
+  /* ================= Keyboard navigation ================= */
+  window.addEventListener('keydown', function (e) {
+    var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    var isInput = tag === 'input' || tag === 'textarea';
+
+    if (e.key === 'Escape') {
+      if (isInput) {
+        e.target.blur();
+      } else if (location.hash && location.hash !== '#/' && location.hash !== '#') {
+        location.hash = '#/';
+      }
+      return;
+    }
+
+    if (isInput) return;
+
+    if (e.key === '/') {
+      e.preventDefault();
+      location.hash = '#/search';
+      setTimeout(function () {
+        var inp = document.querySelector('.search-input');
+        if (inp) inp.focus();
+      }, 50);
+      return;
+    }
+
+    if (e.key === '?' || e.key === 'h' || e.key === 'H') {
+      showShortcutsModal();
+      return;
+    }
+
+    if (e.key === 't' || e.key === 'T') {
+      e.preventDefault();
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      settings.dark = !isDark;
+      saveSettings();
+      applyTheme();
+      showToast(settings.dark ? 'Dark theme enabled' : 'Light theme enabled');
+      return;
+    }
+
+    // Keys 1-7 jump directly to days
+    if (e.key >= '1' && e.key <= '7' && DATA && DATA.days) {
+      var idx = parseInt(e.key, 10) - 1;
+      if (DATA.days[idx]) {
+        e.preventDefault();
+        location.hash = '#/day/' + DATA.days[idx].id;
+        return;
+      }
+    }
+
+    // J/K or Alt+Arrow to scroll through duas
+    var parts = (location.hash || '').replace(/^#\//, '').split('/');
+    if (parts[0] === 'day' && parts[1]) {
+      var cards = document.querySelectorAll('.dua-card');
+      if (cards.length > 0) {
+        if (e.key === 'j' || (e.key === 'ArrowDown' && e.altKey)) {
+          e.preventDefault();
+          scrollToNextDua(cards, 1);
+        } else if (e.key === 'k' || (e.key === 'ArrowUp' && e.altKey)) {
+          e.preventDefault();
+          scrollToNextDua(cards, -1);
+        }
+      }
+    }
+  });
 
   /* ================= iOS hint banner ================= */
   function maybeShowIOSBanner() {

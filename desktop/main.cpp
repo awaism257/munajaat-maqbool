@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
 
     // Default profile persists localStorage (bookmarks, settings) across launches.
     auto *profile = QWebEngineProfile::defaultProfile();
+    profile->setHttpUserAgent(profile->httpUserAgent() + QStringLiteral(" MunajaatDesktop/1.2.0"));
     profile->installUrlSchemeHandler(kScheme, new LocalSchemeHandler(root, &app));
 
     QMainWindow window;
