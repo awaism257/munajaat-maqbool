@@ -945,6 +945,11 @@
     updateDesktopSidebarActive(parts);
     updateAudioUI();
 
+    var siteFooter = document.getElementById('site-footer');
+    if (siteFooter) {
+      siteFooter.style.display = (parts.length === 0 || parts[0] === 'credits') ? 'block' : 'none';
+    }
+
     if (!(parts[0] === 'day' && parts[2])) window.scrollTo(0, 0);
   }
 
