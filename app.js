@@ -436,16 +436,18 @@
               break;
             }
           }
-          if (currentItem) {
+            var arabicEl = card.querySelector('.arabic');
+            var targetEl = arabicEl || card;
             var topbar = document.querySelector('.topbar');
             var topbarHeight = topbar ? topbar.offsetHeight : 60;
-            var visibleTop = topbarHeight + 14;
+            var visibleTop = topbarHeight + 12;
             var footerOffset = 84;
             var visibleHeight = window.innerHeight - visibleTop - footerOffset;
-            var cardHeight = card.offsetHeight;
-            var overflow = cardHeight - visibleHeight;
+            var arabicHeight = targetEl.offsetHeight;
+            var overflow = arabicHeight - visibleHeight;
 
-            if (overflow > 15) {
+            // Only scroll down if the Arabic text ITSELF is taller than the visible viewport
+            if (currentItem && overflow > 15) {
               var s = currentItem.audio_start != null ? currentItem.audio_start : 0;
               var e = currentItem.audio_end != null ? currentItem.audio_end : (s + 10);
               var dur = Math.max(1, e - s);
@@ -453,8 +455,8 @@
 
               var currentY = window.pageYOffset || document.documentElement.scrollTop;
               var cardRect = card.getBoundingClientRect();
-              var cardAbsoluteTop = cardRect.top + currentY;
-              var targetY = cardAbsoluteTop - visibleTop + (p * (overflow + 20));
+              var startY = cardRect.top + currentY - visibleTop;
+              var targetY = startY + (p * (overflow + 24));
 
               var dy = targetY - currentY;
               if (Math.abs(dy) > 1.0) {
@@ -462,7 +464,6 @@
                 window.scrollTo(0, currentY + (dy * speed));
               }
             }
-          }
         }
       }
       if (isAudioActive()) {
