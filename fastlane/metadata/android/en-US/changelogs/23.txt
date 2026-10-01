@@ -1,0 +1,1 @@
+v1.3.0: Precision audio alignment across all 195 duas; direct start at Dua 1 with zero delay; active highlight holds through multi-clause pauses; individual dua play mode; enhanced transliteration styling.
