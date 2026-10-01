@@ -24,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -154,14 +155,22 @@ fun DuaCard(
                 androidx.compose.runtime.CompositionLocalProvider(
                     androidx.compose.ui.platform.LocalLayoutDirection provides LayoutDirection.Ltr
                 ) {
-                    Text(
-                        text = item.transliteration,
-                        modifier = Modifier.fillMaxWidth(),
-                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = (16 * transliterationFontScale).sp,
-                        textAlign = TextAlign.Start
-                    )
+                    Surface(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = item.transliteration,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = (16 * transliterationFontScale).sp,
+                            textAlign = TextAlign.Start
+                        )
+                    }
                 }
             }
 

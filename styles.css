@@ -177,12 +177,23 @@ html[data-theme="dark"] .num-badge { color: #101613; }
   font-size: calc(1.25rem * var(--urdu-scale, 1)); line-height: 2.4;
   margin: 10px 0;
 }
-.english { text-align: left; margin: 10px 0; font-size: calc(1rem * var(--text-scale, 1)); line-height: 1.7; }
 .transliteration {
-  text-align: left; font-style: italic; opacity: .85;
-  font-size: calc(1rem * var(--translit-scale, 1)); line-height: 1.6;
-  margin: 4px 0 10px;
+  text-align: left;
+  font-style: italic;
+  font-size: calc(0.95rem * var(--translit-scale, 1));
+  line-height: 1.65;
+  margin: 12px 0;
+  padding: 8px 14px;
+  background: rgba(27, 94, 32, 0.04);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 8px 8px 0;
+  color: var(--text);
 }
+html[data-theme="dark"] .transliteration {
+  background: rgba(129, 199, 132, 0.06);
+  border-left-color: #81c784;
+}
+.english { text-align: left; margin: 10px 0; font-size: calc(1rem * var(--text-scale, 1)); line-height: 1.7; }
 
 .ref-toggle {
   background: none; border: none; cursor: pointer;
