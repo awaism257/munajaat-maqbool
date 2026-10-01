@@ -26,7 +26,9 @@ data class DuaItem(
     val english: String,
     val urdu: String = "",
     val transliteration: String = "",
-    val footnotes: List<String> = emptyList()
+    val footnotes: List<String> = emptyList(),
+    val audio_start: Double = 0.0,
+    val audio_end: Double = 0.0
 )
 
 /** Ordered day ids per SPEC. */

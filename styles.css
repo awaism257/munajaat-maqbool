@@ -140,7 +140,20 @@ html[data-theme="dark"] .day-card:hover { filter: brightness(1.15); }
 .day-card .chevron { margin-left: auto; color: var(--gold); font-size: 1.5rem; line-height: 1; }
 
 /* ---------- Dua cards ---------- */
-.dua-card { position: relative; }
+.dua-card {
+  position: relative;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+.active-dua-card {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(27, 94, 32, 0.25), 0 8px 24px -4px rgba(27, 94, 32, 0.15) !important;
+  background: rgba(27, 94, 32, 0.04) !important;
+}
+html[data-theme="dark"] .active-dua-card {
+  border-color: #81c784 !important;
+  box-shadow: 0 0 0 2px rgba(129, 199, 132, 0.25), 0 8px 24px -4px rgba(129, 199, 132, 0.15) !important;
+  background: rgba(129, 199, 132, 0.06) !important;
+}
 .dua-head { display: flex; align-items: flex-start; }
 .num-badge {
   min-width: 34px; height: 34px; border-radius: 50%;

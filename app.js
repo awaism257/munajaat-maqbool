@@ -231,6 +231,14 @@
     var head = el('div', 'dua-head');
     head.appendChild(el('span', 'num-badge', String(item.n)));
     var actions = el('div', 'dua-actions');
+
+    var isThisPlaying = (audioPlayer.dayId === day.id && audioPlayer.activeDuaN === item.n && audioPlayer.isPlaying);
+    var play = iconBtn(isThisPlaying ? 'pause' : 'play', 'Play dua ' + item.n, 'small dua-play-btn');
+    play.setAttribute('data-dua-n', item.n);
+    play.addEventListener('click', function () {
+      playOrPauseDua(day, item);
+    });
+
     var cp = iconBtn('copy', 'Share or copy dua', 'small');
     cp.addEventListener('click', function () {
       var parts = [];
@@ -246,7 +254,7 @@
     var bm = iconBtn(bmState ? 'bookmarkFilled' : 'bookmarkOutline', 'Bookmark dua', 'small' + (bmState ? ' gold' : ''));
     bm.setAttribute('aria-pressed', bmState ? 'true' : 'false');
     bm.addEventListener('click', function () { toggleBookmark(day.id, item.n, bm); });
-    actions.appendChild(cp); actions.appendChild(bm);
+    actions.appendChild(play); actions.appendChild(cp); actions.appendChild(bm);
     head.appendChild(actions);
     card.appendChild(head);
 
@@ -275,6 +283,8 @@
   /* ================= Audio Player ================= */
   var audioPlayer = {
     dayId: null,
+    activeDay: null,
+    activeDuaN: null,
     audio: null,
     isPlaying: false
   };
@@ -284,6 +294,192 @@
     var m = Math.floor(s / 60);
     var sec = Math.floor(s % 60);
     return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function playOrPauseDua(day, item) {
+    if (audioPlayer.dayId === day.id && audioPlayer.audio) {
+      if (audioPlayer.activeDuaN === item.n) {
+        if (audioPlayer.isPlaying) {
+          audioPlayer.audio.pause();
+          audioPlayer.isPlaying = false;
+        } else {
+          audioPlayer.audio.play().catch(function (e) { console.error(e); });
+          audioPlayer.isPlaying = true;
+        }
+        updateAudioUI();
+        return;
+      }
+      audioPlayer.activeDuaN = item.n;
+      var startTime = (item && item.audio_start != null) ? item.audio_start : 0;
+      try { audioPlayer.audio.currentTime = startTime; } catch (e) {}
+      if (!audioPlayer.isPlaying) {
+        audioPlayer.audio.play().catch(function (e) { console.error(e); });
+        audioPlayer.isPlaying = true;
+      }
+      highlightAndScrollToDua(item.n);
+      updateAudioUI();
+      return;
+    }
+
+    startAudioForDay(day, item);
+  }
+
+  function startAudioForDay(day, startItem) {
+    if (audioPlayer.audio) {
+      audioPlayer.audio.pause();
+      audioPlayer.audio = null;
+    }
+    audioPlayer.dayId = day.id;
+    audioPlayer.activeDay = day;
+    audioPlayer.activeDuaN = startItem ? startItem.n : (day.items[0] ? day.items[0].n : 1);
+    audioPlayer.isPlaying = true;
+
+    var startTime = (startItem && startItem.audio_start != null) ? startItem.audio_start : 0;
+    var a = new Audio('https://audio.munajaat.app/islah_slow/' + day.id + '.mp3');
+    audioPlayer.audio = a;
+
+    var seekDone = false;
+    function applySeek() {
+      if (!seekDone && startTime > 0) {
+        try {
+          a.currentTime = startTime;
+          seekDone = true;
+        } catch (e) {}
+      }
+    }
+    a.addEventListener('loadedmetadata', applySeek);
+    a.addEventListener('canplay', applySeek);
+
+    a.addEventListener('timeupdate', onAudioTimeUpdate);
+    a.addEventListener('ended', function () {
+      audioPlayer.isPlaying = false;
+      audioPlayer.activeDuaN = null;
+      var allActive = document.querySelectorAll('.active-dua-card');
+      allActive.forEach(function (c) { c.classList.remove('active-dua-card'); });
+      updateAudioUI();
+    });
+    a.addEventListener('error', function () {
+      audioPlayer.isPlaying = false;
+      updateAudioUI();
+      toast('Failed to load audio');
+    });
+
+    updateAudioUI();
+    highlightAndScrollToDua(audioPlayer.activeDuaN);
+
+    a.play().then(function () {
+      applySeek();
+    }).catch(function (e) {
+      console.error(e);
+      audioPlayer.isPlaying = false;
+      updateAudioUI();
+    });
+  }
+
+  function onAudioTimeUpdate() {
+    if (!audioPlayer.audio || !audioPlayer.activeDay) return;
+    var t = audioPlayer.audio.currentTime;
+    var items = audioPlayer.activeDay.items;
+    var matched = null;
+
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      var s = it.audio_start != null ? it.audio_start : 0;
+      var e = it.audio_end != null ? it.audio_end : 999999;
+      if (t >= s && t < e) {
+        matched = it;
+        break;
+      }
+    }
+    if (!matched && items.length > 0) {
+      if (t < (items[0].audio_start || 0)) {
+        matched = items[0];
+      } else if (t >= (items[items.length - 1].audio_start || 0)) {
+        matched = items[items.length - 1];
+      }
+    }
+
+    if (matched && matched.n !== audioPlayer.activeDuaN) {
+      audioPlayer.activeDuaN = matched.n;
+      highlightAndScrollToDua(matched.n);
+    }
+    updateAudioUI();
+  }
+
+  function highlightAndScrollToDua(duaN) {
+    var allActive = document.querySelectorAll('.active-dua-card');
+    allActive.forEach(function (c) { c.classList.remove('active-dua-card'); });
+
+    var targetCard = document.getElementById('item-' + duaN);
+    if (targetCard) {
+      targetCard.classList.add('active-dua-card');
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function updateAudioUI() {
+    var hash = location.hash || '';
+    var m = hash.match(/^#\/day\/([^/]+)/);
+    var visibleDayId = m ? m[1] : null;
+
+    // 1. Update individual dua card play buttons
+    var cardPlayBtns = document.querySelectorAll('.dua-play-btn');
+    cardPlayBtns.forEach(function (btn) {
+      var n = parseInt(btn.getAttribute('data-dua-n'), 10);
+      var isThis = (visibleDayId === audioPlayer.dayId && audioPlayer.activeDuaN === n && audioPlayer.isPlaying);
+      btn.innerHTML = isThis ? ICONS.pause : ICONS.play;
+      btn.setAttribute('aria-label', (isThis ? 'Pause dua ' : 'Play dua ') + n);
+    });
+
+    // 2. Ensure active card highlight matches visible day
+    if (visibleDayId === audioPlayer.dayId && audioPlayer.activeDuaN) {
+      var target = document.getElementById('item-' + audioPlayer.activeDuaN);
+      if (target && !target.classList.contains('active-dua-card')) {
+        var allActive = document.querySelectorAll('.active-dua-card');
+        allActive.forEach(function (c) { c.classList.remove('active-dua-card'); });
+        target.classList.add('active-dua-card');
+      }
+    } else {
+      var oldActive = document.querySelectorAll('.active-dua-card');
+      oldActive.forEach(function (c) { c.classList.remove('active-dua-card'); });
+    }
+
+    // 3. Update reader footer
+    var footerPlayBtn = document.querySelector('.reader-footer .audio-play-btn');
+    var footerCount = document.querySelector('.reader-footer .audio-count');
+    var footerTimer = document.querySelector('.reader-footer .audio-timer');
+
+    if (footerPlayBtn) {
+      var isDayPlaying = (visibleDayId === audioPlayer.dayId && audioPlayer.isPlaying);
+      footerPlayBtn.innerHTML = isDayPlaying ? ICONS.pause : ICONS.play;
+      footerPlayBtn.setAttribute('aria-label', isDayPlaying ? 'Pause recitation' : 'Play recitation');
+    }
+
+    if (footerCount) {
+      var curDay = visibleDayId ? dayById[visibleDayId] : null;
+      if (curDay) {
+        if (visibleDayId === audioPlayer.dayId && (audioPlayer.isPlaying || (audioPlayer.audio && audioPlayer.audio.currentTime > 0))) {
+          var curN = audioPlayer.activeDuaN || 1;
+          footerCount.textContent = 'Dua ' + curN + ' of ' + curDay.items.length;
+        } else {
+          footerCount.textContent = curDay.items.length + (curDay.items.length === 1 ? ' dua' : ' duas');
+        }
+      }
+    }
+
+    if (footerTimer) {
+      if (visibleDayId === audioPlayer.dayId && audioPlayer.audio) {
+        if (!isNaN(audioPlayer.audio.duration) && audioPlayer.audio.duration > 0) {
+          footerTimer.textContent = formatTime(audioPlayer.audio.currentTime) + ' / ' + formatTime(audioPlayer.audio.duration);
+        } else if (audioPlayer.isPlaying) {
+          footerTimer.textContent = 'Streaming…';
+        } else {
+          footerTimer.textContent = '';
+        }
+      } else {
+        footerTimer.textContent = '';
+      }
+    }
   }
 
   function renderDay(id, scrollTo) {
@@ -326,28 +522,6 @@
     info.appendChild(count);
     info.appendChild(timer);
 
-    function updateFooterUi() {
-      if (audioPlayer.dayId === day.id && audioPlayer.isPlaying) {
-        playBtn.innerHTML = ICONS.pause;
-        playBtn.setAttribute('aria-label', 'Pause recitation');
-        count.textContent = 'Reciting · ' + day.items.length + ' duas';
-        if (audioPlayer.audio && !isNaN(audioPlayer.audio.duration) && audioPlayer.audio.duration > 0) {
-          timer.textContent = formatTime(audioPlayer.audio.currentTime) + ' / ' + formatTime(audioPlayer.audio.duration);
-        } else {
-          timer.textContent = 'Streaming…';
-        }
-      } else {
-        playBtn.innerHTML = ICONS.play;
-        playBtn.setAttribute('aria-label', 'Play recitation');
-        count.textContent = day.items.length + (day.items.length === 1 ? ' dua' : ' duas');
-        if (audioPlayer.dayId === day.id && audioPlayer.audio && !isNaN(audioPlayer.audio.duration) && audioPlayer.audio.duration > 0) {
-          timer.textContent = 'Paused (' + formatTime(audioPlayer.audio.currentTime) + ')';
-        } else {
-          timer.textContent = '';
-        }
-      }
-    }
-
     playBtn.addEventListener('click', function () {
       if (audioPlayer.dayId === day.id && audioPlayer.audio) {
         if (audioPlayer.isPlaying) {
@@ -357,34 +531,9 @@
           audioPlayer.audio.play().catch(function (e) { console.error(e); });
           audioPlayer.isPlaying = true;
         }
-        updateFooterUi();
+        updateAudioUI();
       } else {
-        if (audioPlayer.audio) {
-          audioPlayer.audio.pause();
-          audioPlayer.audio = null;
-        }
-        audioPlayer.dayId = day.id;
-        var a = new Audio('https://audio.munajaat.app/full/' + day.id + '.mp3');
-        audioPlayer.audio = a;
-        audioPlayer.isPlaying = true;
-        updateFooterUi();
-        a.play().catch(function (e) {
-          console.error(e);
-          audioPlayer.isPlaying = false;
-          updateFooterUi();
-        });
-        a.addEventListener('timeupdate', function () {
-          updateFooterUi();
-        });
-        a.addEventListener('ended', function () {
-          audioPlayer.isPlaying = false;
-          updateFooterUi();
-        });
-        a.addEventListener('error', function () {
-          audioPlayer.isPlaying = false;
-          updateFooterUi();
-          toast('Failed to load audio');
-        });
+        startAudioForDay(day, day.items[0]);
       }
     });
 
@@ -403,7 +552,7 @@
     }
     footer.appendChild(nextBtn);
 
-    updateFooterUi();
+    updateAudioUI();
     w.appendChild(footer);
 
     if (scrollTo) {
@@ -794,6 +943,7 @@
     main.innerHTML = '';
     main.appendChild(view);
     updateDesktopSidebarActive(parts);
+    updateAudioUI();
 
     if (!(parts[0] === 'day' && parts[2])) window.scrollTo(0, 0);
   }

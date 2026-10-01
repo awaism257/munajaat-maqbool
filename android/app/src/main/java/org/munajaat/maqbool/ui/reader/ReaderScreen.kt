@@ -131,8 +131,14 @@ fun ReaderScreen(
                             }
 
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                val countLabel = if (isPlaying || (isCurrentDay && audioState.currentPositionMs > 0)) {
+                                    val duaN = audioState.activeDuaN ?: 1
+                                    "Dua $duaN of ${day.items.size}"
+                                } else {
+                                    "${day.items.size} duas"
+                                }
                                 Text(
-                                    text = if (isPlaying) "Reciting · ${day.items.size} duas" else "${day.items.size} duas",
+                                    text = countLabel,
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -160,6 +166,18 @@ fun ReaderScreen(
                 }
             }
         ) { padding ->
+            LaunchedEffect(audioState.activeDuaN, audioState.isPlaying) {
+                if (audioState.dayId == day.id && audioState.isPlaying) {
+                    val targetN = audioState.activeDuaN
+                    if (targetN != null) {
+                        val index = day.items.indexOfFirst { it.n == targetN }
+                        if (index >= 0) {
+                            listState.animateScrollToItem(index)
+                        }
+                    }
+                }
+            }
+
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize().padding(padding),
@@ -167,6 +185,8 @@ fun ReaderScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(day.items, key = { it.n }) { item ->
+                    val isItemActive = (audioState.dayId == day.id && audioState.activeDuaN == item.n)
+                    val isItemPlaying = isItemActive && audioState.isPlaying
                     DuaCard(
                         item = item,
                         arabicFontScale = prefs.arabicFontScale,
@@ -178,7 +198,10 @@ fun ReaderScreen(
                         showUrdu = prefs.showUrdu,
                         showTransliteration = prefs.showTransliteration,
                         isBookmarked = viewModel.isBookmarked(day.id, item.n),
-                        onToggleBookmark = { viewModel.toggleBookmark(day.id, item.n) }
+                        onToggleBookmark = { viewModel.toggleBookmark(day.id, item.n) },
+                        isActive = isItemActive,
+                        isPlaying = isItemPlaying,
+                        onPlayToggle = { viewModel.playDua(day.id, item.n, item.audio_start) }
                     )
                 }
             }

@@ -27,6 +27,7 @@ sealed interface ContentState {
 
 data class AudioPlaybackState(
     val dayId: String? = null,
+    val activeDuaN: Int? = null,
     val isPlaying: Boolean = false,
     val isBuffering: Boolean = false,
     val currentPositionMs: Int = 0,
@@ -162,6 +163,104 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val _audioState = MutableStateFlow(AudioPlaybackState())
     val audioState: StateFlow<AudioPlaybackState> = _audioState
 
+    private fun findActiveDua(dayId: String, posMs: Int): Int? {
+        val ready = _contentState.value as? ContentState.Ready ?: return null
+        val day = ready.content.days.find { it.id == dayId } ?: return null
+        val posSec = posMs / 1000.0
+        val matched = day.items.find { item ->
+            val start = item.audio_start
+            val end = if (item.audio_end > 0.0) item.audio_end else Double.MAX_VALUE
+            posSec >= start && posSec < end
+        }
+        if (matched != null) return matched.n
+        if (day.items.isNotEmpty()) {
+            return if (posSec < day.items.first().audio_start) {
+                day.items.first().n
+            } else {
+                day.items.last().n
+            }
+        }
+        return null
+    }
+
+    fun playDua(dayId: String, itemN: Int, audioStart: Double) {
+        val current = _audioState.value
+        val seekMs = (audioStart * 1000).toInt()
+        if (current.dayId == dayId && mediaPlayer != null) {
+            if (current.activeDuaN == itemN) {
+                if (current.isPlaying) {
+                    try { mediaPlayer?.pause() } catch (_: Exception) {}
+                    _audioState.value = current.copy(isPlaying = false)
+                } else {
+                    try {
+                        mediaPlayer?.start()
+                        _audioState.value = current.copy(isPlaying = true)
+                        startPositionTracker()
+                    } catch (_: Exception) {}
+                }
+            } else {
+                try {
+                    mediaPlayer?.seekTo(seekMs)
+                    if (!current.isPlaying) {
+                        mediaPlayer?.start()
+                    }
+                    _audioState.value = current.copy(
+                        isPlaying = true,
+                        activeDuaN = itemN,
+                        currentPositionMs = seekMs
+                    )
+                    startPositionTracker()
+                } catch (_: Exception) {}
+            }
+        } else {
+            stopAndReleasePlayer()
+            _audioState.value = AudioPlaybackState(dayId = dayId, activeDuaN = itemN, isBuffering = true, currentPositionMs = seekMs)
+            try {
+                val player = MediaPlayer()
+                mediaPlayer = player
+                player.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                val url = "https://audio.munajaat.app/islah_slow/$dayId.mp3"
+                player.setDataSource(url)
+                player.setOnPreparedListener { mp ->
+                    if (mediaPlayer == mp) {
+                        try {
+                            if (seekMs > 0) {
+                                mp.seekTo(seekMs)
+                            }
+                            mp.start()
+                            _audioState.value = AudioPlaybackState(
+                                dayId = dayId,
+                                activeDuaN = itemN,
+                                isPlaying = true,
+                                isBuffering = false,
+                                currentPositionMs = seekMs,
+                                durationMs = mp.duration
+                            )
+                            startPositionTracker()
+                        } catch (_: Exception) {
+                            _audioState.value = AudioPlaybackState()
+                        }
+                    }
+                }
+                player.setOnCompletionListener {
+                    _audioState.value = AudioPlaybackState(dayId = dayId, isPlaying = false, currentPositionMs = 0, durationMs = player.duration)
+                }
+                player.setOnErrorListener { _, _, _ ->
+                    _audioState.value = AudioPlaybackState()
+                    true
+                }
+                player.prepareAsync()
+            } catch (e: Exception) {
+                _audioState.value = AudioPlaybackState()
+            }
+        }
+    }
+
     fun toggleAudio(dayId: String) {
         val current = _audioState.value
         if (current.dayId == dayId && mediaPlayer != null) {
@@ -176,8 +275,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 } catch (_: Exception) {}
             }
         } else {
+            val initialDuaN = findActiveDua(dayId, 0) ?: 1
             stopAndReleasePlayer()
-            _audioState.value = AudioPlaybackState(dayId = dayId, isBuffering = true)
+            _audioState.value = AudioPlaybackState(dayId = dayId, activeDuaN = initialDuaN, isBuffering = true)
             try {
                 val player = MediaPlayer()
                 mediaPlayer = player
@@ -187,7 +287,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-                val url = "https://audio.munajaat.app/full/$dayId.mp3"
+                val url = "https://audio.munajaat.app/islah_slow/$dayId.mp3"
                 player.setDataSource(url)
                 player.setOnPreparedListener { mp ->
                     if (mediaPlayer == mp) {
@@ -195,6 +295,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                             mp.start()
                             _audioState.value = AudioPlaybackState(
                                 dayId = dayId,
+                                activeDuaN = initialDuaN,
                                 isPlaying = true,
                                 isBuffering = false,
                                 currentPositionMs = mp.currentPosition,
@@ -224,15 +325,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         trackerJob?.cancel()
         trackerJob = viewModelScope.launch {
             while (true) {
-                delay(500)
+                delay(400)
                 val mp = mediaPlayer
-                if (mp != null && _audioState.value.isPlaying) {
+                val current = _audioState.value
+                if (mp != null && current.isPlaying && current.dayId != null) {
                     try {
                         val pos = mp.currentPosition
                         val dur = mp.duration
-                        _audioState.value = _audioState.value.copy(
+                        val activeN = findActiveDua(current.dayId, pos) ?: current.activeDuaN
+                        _audioState.value = current.copy(
                             currentPositionMs = pos,
-                            durationMs = if (dur > 0) dur else _audioState.value.durationMs
+                            durationMs = if (dur > 0) dur else current.durationMs,
+                            activeDuaN = activeN
                         )
                     } catch (_: Exception) {
                         break

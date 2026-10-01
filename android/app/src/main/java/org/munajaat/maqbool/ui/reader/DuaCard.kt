@@ -1,6 +1,7 @@
 package org.munajaat.maqbool.ui.reader
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,8 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
@@ -62,6 +65,9 @@ fun DuaCard(
     showTransliteration: Boolean = false,
     isBookmarked: Boolean,
     onToggleBookmark: () -> Unit,
+    isActive: Boolean = false,
+    isPlaying: Boolean = false,
+    onPlayToggle: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var footnotesExpanded by rememberSaveable(item.n) { mutableStateOf(false) }
@@ -71,7 +77,8 @@ fun DuaCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = appCardColors()
+        colors = appCardColors(),
+        border = if (isActive) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -87,6 +94,14 @@ fun DuaCard(
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onPlayToggle) {
+                        Icon(
+                            imageVector = if (isActive && isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                            contentDescription = if (isActive && isPlaying) "Pause dua ${item.n}" else "Play dua ${item.n}",
+                            tint = if (isActive) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                     IconButton(
                         onClick = {
                             // Copy exactly what is visible: Arabic always, then Urdu
