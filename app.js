@@ -422,9 +422,12 @@
     var matched = null;
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
+      var nextIt = (i + 1 < items.length) ? items[i + 1] : null;
       var s = it.audio_start != null ? it.audio_start : 0;
-      var e = it.audio_end != null ? it.audio_end : 999999;
-      if (t >= s && t < e) {
+      var e = it.audio_end != null ? it.audio_end : null;
+
+      // Continuous hold between unit.startTime and nextUnit.startTime (or unit.endTime if last unit)
+      if (t >= s && (nextIt && nextIt.audio_start != null ? t < nextIt.audio_start : (e != null ? t < e : true))) {
         matched = it;
         break;
       }

@@ -168,17 +168,25 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val ready = _contentState.value as? ContentState.Ready ?: return null
         val day = ready.content.days.find { it.id == dayId } ?: return null
         val posSec = posMs / 1000.0
-        val matched = day.items.find { item ->
-            val start = item.audio_start
-            val end = if (item.audio_end > 0.0) item.audio_end else Double.MAX_VALUE
-            posSec >= start && posSec < end
-        }
-        if (matched != null) return matched.n
-        if (day.items.isNotEmpty()) {
-            return if (posSec < day.items.first().audio_start) {
-                day.items.first().n
+        val items = day.items
+        for (i in items.indices) {
+            val it = items[i]
+            val nextIt = if (i + 1 < items.size) items[i + 1] else null
+            val s = it.audio_start
+            val e = if (it.audio_end > 0.0) it.audio_end else null
+
+            val matches = if (nextIt != null) {
+                posSec >= s && posSec < nextIt.audio_start
             } else {
-                day.items.last().n
+                posSec >= s && (e == null || posSec < e)
+            }
+            if (matches) return it.n
+        }
+        if (items.isNotEmpty()) {
+            return if (posSec < items.first().audio_start) {
+                items.first().n
+            } else {
+                items.last().n
             }
         }
         return null
