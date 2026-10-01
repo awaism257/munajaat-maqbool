@@ -24,3 +24,4 @@ modules:
       - type: git
         url: https://github.com/awaism257/munajaat-maqbool.git
         tag: desktop-v1.2.0
+        commit: ee8c9268a1b5e4fa2c8723aa1e85138b67d66f38
