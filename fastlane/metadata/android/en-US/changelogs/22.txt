@@ -1,0 +1,1 @@
+v1.2.1: Fixed reader bottom navigation bar insets on devices with 3-button system navigation; updated official website domain to munajaat.app.
