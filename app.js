@@ -289,6 +289,10 @@
     isPlaying: false
   };
 
+  function isAudioActive() {
+    return !!(audioPlayer.audio && !audioPlayer.audio.paused && !audioPlayer.audio.ended);
+  }
+
   function formatTime(s) {
     if (isNaN(s) || s == null) return '0:00';
     var m = Math.floor(s / 60);
@@ -299,22 +303,22 @@
   function playOrPauseDua(day, item) {
     if (audioPlayer.dayId === day.id && audioPlayer.audio) {
       if (audioPlayer.activeDuaN === item.n) {
-        if (audioPlayer.isPlaying) {
+        if (!audioPlayer.audio.paused) {
           audioPlayer.audio.pause();
-          audioPlayer.isPlaying = false;
         } else {
-          audioPlayer.audio.play().catch(function (e) { console.error(e); });
-          audioPlayer.isPlaying = true;
+          audioPlayer.audio.play().catch(function (e) {
+            if (e.name !== 'AbortError') console.error(e);
+          });
         }
-        updateAudioUI();
         return;
       }
       audioPlayer.activeDuaN = item.n;
       var startTime = (item && item.audio_start != null) ? item.audio_start : 0;
       try { audioPlayer.audio.currentTime = startTime; } catch (e) {}
-      if (!audioPlayer.isPlaying) {
-        audioPlayer.audio.play().catch(function (e) { console.error(e); });
-        audioPlayer.isPlaying = true;
+      if (audioPlayer.audio.paused) {
+        audioPlayer.audio.play().catch(function (e) {
+          if (e.name !== 'AbortError') console.error(e);
+        });
       }
       highlightAndScrollToDua(item.n);
       updateAudioUI();
@@ -326,7 +330,7 @@
 
   function startAudioForDay(day, startItem) {
     if (audioPlayer.audio) {
-      audioPlayer.audio.pause();
+      try { audioPlayer.audio.pause(); } catch (e) {}
       audioPlayer.audio = null;
     }
     audioPlayer.dayId = day.id;
@@ -350,6 +354,18 @@
     a.addEventListener('loadedmetadata', applySeek);
     a.addEventListener('canplay', applySeek);
 
+    a.addEventListener('play', function () {
+      audioPlayer.isPlaying = true;
+      updateAudioUI();
+    });
+    a.addEventListener('playing', function () {
+      audioPlayer.isPlaying = true;
+      updateAudioUI();
+    });
+    a.addEventListener('pause', function () {
+      audioPlayer.isPlaying = false;
+      updateAudioUI();
+    });
     a.addEventListener('timeupdate', onAudioTimeUpdate);
     a.addEventListener('ended', function () {
       audioPlayer.isPlaying = false;
@@ -370,7 +386,9 @@
     a.play().then(function () {
       applySeek();
     }).catch(function (e) {
-      console.error(e);
+      if (e.name !== 'AbortError') {
+        console.error(e);
+      }
       audioPlayer.isPlaying = false;
       updateAudioUI();
     });
@@ -422,11 +440,13 @@
     var m = hash.match(/^#\/day\/([^/]+)/);
     var visibleDayId = m ? m[1] : null;
 
+    var isAudioActuallyPlaying = isAudioActive();
+
     // 1. Update individual dua card play buttons
     var cardPlayBtns = document.querySelectorAll('.dua-play-btn');
     cardPlayBtns.forEach(function (btn) {
       var n = parseInt(btn.getAttribute('data-dua-n'), 10);
-      var isThis = (visibleDayId === audioPlayer.dayId && audioPlayer.activeDuaN === n && audioPlayer.isPlaying);
+      var isThis = (visibleDayId === audioPlayer.dayId && audioPlayer.activeDuaN === n && isAudioActuallyPlaying);
       btn.innerHTML = isThis ? ICONS.pause : ICONS.play;
       btn.setAttribute('aria-label', (isThis ? 'Pause dua ' : 'Play dua ') + n);
     });
@@ -450,7 +470,7 @@
     var footerTimer = document.querySelector('.reader-footer .audio-timer');
 
     if (footerPlayBtn) {
-      var isDayPlaying = (visibleDayId === audioPlayer.dayId && audioPlayer.isPlaying);
+      var isDayPlaying = (visibleDayId === audioPlayer.dayId && isAudioActuallyPlaying);
       footerPlayBtn.innerHTML = isDayPlaying ? ICONS.pause : ICONS.play;
       footerPlayBtn.setAttribute('aria-label', isDayPlaying ? 'Pause recitation' : 'Play recitation');
     }
@@ -458,7 +478,7 @@
     if (footerCount) {
       var curDay = visibleDayId ? dayById[visibleDayId] : null;
       if (curDay) {
-        if (visibleDayId === audioPlayer.dayId && (audioPlayer.isPlaying || (audioPlayer.audio && audioPlayer.audio.currentTime > 0))) {
+        if (visibleDayId === audioPlayer.dayId && (isAudioActuallyPlaying || (audioPlayer.audio && audioPlayer.audio.currentTime > 0))) {
           var curN = audioPlayer.activeDuaN || 1;
           footerCount.textContent = 'Dua ' + curN + ' of ' + curDay.items.length;
         } else {
@@ -471,7 +491,7 @@
       if (visibleDayId === audioPlayer.dayId && audioPlayer.audio) {
         if (!isNaN(audioPlayer.audio.duration) && audioPlayer.audio.duration > 0) {
           footerTimer.textContent = formatTime(audioPlayer.audio.currentTime) + ' / ' + formatTime(audioPlayer.audio.duration);
-        } else if (audioPlayer.isPlaying) {
+        } else if (isAudioActuallyPlaying) {
           footerTimer.textContent = 'Streaming…';
         } else {
           footerTimer.textContent = '';
@@ -524,14 +544,13 @@
 
     playBtn.addEventListener('click', function () {
       if (audioPlayer.dayId === day.id && audioPlayer.audio) {
-        if (audioPlayer.isPlaying) {
+        if (!audioPlayer.audio.paused) {
           audioPlayer.audio.pause();
-          audioPlayer.isPlaying = false;
         } else {
-          audioPlayer.audio.play().catch(function (e) { console.error(e); });
-          audioPlayer.isPlaying = true;
+          audioPlayer.audio.play().catch(function (e) {
+            if (e.name !== 'AbortError') console.error(e);
+          });
         }
-        updateAudioUI();
       } else {
         startAudioForDay(day, day.items[0]);
       }
