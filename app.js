@@ -285,6 +285,7 @@
     dayId: null,
     activeDay: null,
     activeDuaN: null,
+    singleDuaN: null, // If set, stops playback when this individual dua finishes
     audio: null,
     isPlaying: false
   };
@@ -306,6 +307,7 @@
         if (!audioPlayer.audio.paused) {
           audioPlayer.audio.pause();
         } else {
+          audioPlayer.singleDuaN = item.n;
           audioPlayer.audio.play().catch(function (e) {
             if (e.name !== 'AbortError') console.error(e);
           });
@@ -313,6 +315,7 @@
         return;
       }
       audioPlayer.activeDuaN = item.n;
+      audioPlayer.singleDuaN = item.n;
       var startTime = (item && item.audio_start != null) ? item.audio_start : 0;
       try { audioPlayer.audio.currentTime = startTime; } catch (e) {}
       if (audioPlayer.audio.paused) {
@@ -325,10 +328,10 @@
       return;
     }
 
-    startAudioForDay(day, item);
+    startAudioForDay(day, item, true);
   }
 
-  function startAudioForDay(day, startItem) {
+  function startAudioForDay(day, startItem, isSingleDua) {
     if (audioPlayer.audio) {
       try { audioPlayer.audio.pause(); } catch (e) {}
       audioPlayer.audio = null;
@@ -336,6 +339,7 @@
     audioPlayer.dayId = day.id;
     audioPlayer.activeDay = day;
     audioPlayer.activeDuaN = startItem ? startItem.n : (day.items[0] ? day.items[0].n : 1);
+    audioPlayer.singleDuaN = isSingleDua ? (startItem ? startItem.n : null) : null;
     audioPlayer.isPlaying = true;
 
     var startTime = (startItem && startItem.audio_start != null) ? startItem.audio_start : 0;
@@ -370,12 +374,14 @@
     a.addEventListener('ended', function () {
       audioPlayer.isPlaying = false;
       audioPlayer.activeDuaN = null;
+      audioPlayer.singleDuaN = null;
       var allActive = document.querySelectorAll('.active-dua-card');
       allActive.forEach(function (c) { c.classList.remove('active-dua-card'); });
       updateAudioUI();
     });
     a.addEventListener('error', function () {
       audioPlayer.isPlaying = false;
+      audioPlayer.singleDuaN = null;
       updateAudioUI();
       toast('Failed to load audio');
     });
@@ -398,8 +404,22 @@
     if (!audioPlayer.audio || !audioPlayer.activeDay) return;
     var t = audioPlayer.audio.currentTime;
     var items = audioPlayer.activeDay.items;
-    var matched = null;
 
+    // If single-dua mode is active, stop playback at the end of this dua:
+    if (audioPlayer.singleDuaN != null) {
+      var singleItem = null;
+      for (var k = 0; k < items.length; k++) {
+        if (items[k].n === audioPlayer.singleDuaN) { singleItem = items[k]; break; }
+      }
+      if (singleItem && singleItem.audio_end > 0 && t >= (singleItem.audio_end - 0.15)) {
+        audioPlayer.audio.pause();
+        audioPlayer.singleDuaN = null;
+        updateAudioUI();
+        return;
+      }
+    }
+
+    var matched = null;
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
       var s = it.audio_start != null ? it.audio_start : 0;
@@ -547,12 +567,13 @@
         if (!audioPlayer.audio.paused) {
           audioPlayer.audio.pause();
         } else {
+          audioPlayer.singleDuaN = null;
           audioPlayer.audio.play().catch(function (e) {
             if (e.name !== 'AbortError') console.error(e);
           });
         }
       } else {
-        startAudioForDay(day, day.items[0]);
+        startAudioForDay(day, day.items[0], false);
       }
     });
 

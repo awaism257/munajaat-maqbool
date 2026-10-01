@@ -28,6 +28,7 @@ sealed interface ContentState {
 data class AudioPlaybackState(
     val dayId: String? = null,
     val activeDuaN: Int? = null,
+    val singleDuaN: Int? = null,
     val isPlaying: Boolean = false,
     val isBuffering: Boolean = false,
     val currentPositionMs: Int = 0,
@@ -196,7 +197,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     try {
                         mp.start()
-                        _audioState.value = current.copy(isPlaying = true)
+                        _audioState.value = current.copy(isPlaying = true, singleDuaN = itemN)
                         startPositionTracker()
                     } catch (_: Exception) {}
                 }
@@ -209,6 +210,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     _audioState.value = current.copy(
                         isPlaying = true,
                         activeDuaN = itemN,
+                        singleDuaN = itemN,
                         currentPositionMs = seekMs
                     )
                     startPositionTracker()
@@ -216,7 +218,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             }
         } else {
             stopAndReleasePlayer()
-            _audioState.value = AudioPlaybackState(dayId = dayId, activeDuaN = itemN, isBuffering = true, currentPositionMs = seekMs)
+            _audioState.value = AudioPlaybackState(dayId = dayId, activeDuaN = itemN, singleDuaN = itemN, isBuffering = true, currentPositionMs = seekMs)
             try {
                 val player = MediaPlayer()
                 mediaPlayer = player
@@ -238,6 +240,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                             _audioState.value = AudioPlaybackState(
                                 dayId = dayId,
                                 activeDuaN = itemN,
+                                singleDuaN = itemN,
                                 isPlaying = true,
                                 isBuffering = false,
                                 currentPositionMs = seekMs,
@@ -274,7 +277,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             } else {
                 try {
                     mp.start()
-                    _audioState.value = current.copy(isPlaying = true)
+                    _audioState.value = current.copy(isPlaying = true, singleDuaN = null)
                     startPositionTracker()
                 } catch (_: Exception) {}
             }
@@ -284,7 +287,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             val initialDuaN = firstItem?.n ?: 1
             val initialSeekMs = ((firstItem?.audio_start ?: 0.0) * 1000).toInt()
             stopAndReleasePlayer()
-            _audioState.value = AudioPlaybackState(dayId = dayId, activeDuaN = initialDuaN, isBuffering = true, currentPositionMs = initialSeekMs)
+            _audioState.value = AudioPlaybackState(dayId = dayId, activeDuaN = initialDuaN, singleDuaN = null, isBuffering = true, currentPositionMs = initialSeekMs)
             try {
                 val player = MediaPlayer()
                 mediaPlayer = player
@@ -306,6 +309,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                             _audioState.value = AudioPlaybackState(
                                 dayId = dayId,
                                 activeDuaN = initialDuaN,
+                                singleDuaN = null,
                                 isPlaying = true,
                                 isBuffering = false,
                                 currentPositionMs = initialSeekMs,
@@ -342,6 +346,26 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     try {
                         val pos = mp.currentPosition
                         val dur = mp.duration
+
+                        // Check single dua mode: stop when this individual dua finishes
+                        if (current.singleDuaN != null) {
+                            val ready = _contentState.value as? ContentState.Ready
+                            val day = ready?.content?.days?.find { it.id == current.dayId }
+                            val singleItem = day?.items?.find { it.n == current.singleDuaN }
+                            val endMs = if (singleItem != null && singleItem.audio_end > 0.0) {
+                                (singleItem.audio_end * 1000).toInt()
+                            } else 0
+                            if (endMs > 0 && pos >= (endMs - 150)) {
+                                try { mp.pause() } catch (_: Exception) {}
+                                _audioState.value = current.copy(
+                                    isPlaying = false,
+                                    singleDuaN = null,
+                                    currentPositionMs = endMs
+                                )
+                                break
+                            }
+                        }
+
                         val activeN = findActiveDua(current.dayId, pos) ?: current.activeDuaN
                         _audioState.value = current.copy(
                             currentPositionMs = pos,
