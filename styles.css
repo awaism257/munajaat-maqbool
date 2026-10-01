@@ -322,6 +322,18 @@ html[data-theme="dark"] .support-btn { color: #101613; }
 #site-footer a { color: var(--text-dim); text-decoration: none; opacity: .85; }
 #site-footer a:hover { color: var(--gold); text-decoration: underline; opacity: 1; }
 
+/* Prevent floating Netlify HUD/badge from obscuring media controls */
+#nl-badge-frame,
+#nl-hud-frame,
+iframe[id^="nl-"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* ---------- Responsive Desktop Sidebar & Dual-Pane Layout ---------- */
 .desktop-sidebar { display: none; }
 .layout-container { width: 100%; min-height: 100vh; }
