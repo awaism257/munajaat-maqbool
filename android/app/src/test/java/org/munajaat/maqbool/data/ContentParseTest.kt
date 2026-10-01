@@ -66,6 +66,16 @@ class ContentParseTest {
     }
 
     @Test
+    fun transliterationParsedWhenPresent() {
+        val withTranslit = sample.replace(
+            "\"english\": \"In the name of Allah\"",
+            "\"english\": \"In the name of Allah\", \"transliteration\": \"Bismillāh\""
+        )
+        val content = json.decodeFromString(Content.serializer(), withTranslit)
+        assertEquals("Bismillāh", content.days[0].items[0].transliteration)
+    }
+
+    @Test
     fun bookmarkKeyFormat() {
         assertEquals("friday:13", PrefsRepository.bookmarkKey("friday", 13))
     }

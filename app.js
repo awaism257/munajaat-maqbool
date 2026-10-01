@@ -86,7 +86,11 @@
     bookmarkFilled: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
     settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
     back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>',
-    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>',
+    arrowLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
+    arrowRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
   };
   function iconBtn(name, label, extraCls) {
     var b = el('button', 'icon-btn' + (extraCls ? ' ' + extraCls : ''));
@@ -268,9 +272,23 @@
     return card;
   }
 
+  /* ================= Audio Player ================= */
+  var audioPlayer = {
+    dayId: null,
+    audio: null,
+    isPlaying: false
+  };
+
+  function formatTime(s) {
+    if (isNaN(s) || s == null) return '0:00';
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
   function renderDay(id, scrollTo) {
     var day = dayById[id];
-    var w = el('div', 'wrap');
+    var w = el('div', 'wrap reader-wrap');
     if (!day) {
       w.appendChild(makeTopbar('Not found', true));
       w.appendChild(el('div', 'empty', 'Day not found.'));
@@ -278,6 +296,116 @@
     }
     w.appendChild(makeTopbar(day.title, true));
     day.items.forEach(function (item) { w.appendChild(buildDuaCard(day, item)); });
+
+    // Day navigation & audio bottom footer
+    var dayIndex = -1;
+    for (var i = 0; i < DATA.days.length; i++) {
+      if (DATA.days[i].id === day.id) { dayIndex = i; break; }
+    }
+
+    var footer = el('div', 'reader-footer');
+    var prevBtn = iconBtn('arrowLeft', 'Previous day');
+    if (dayIndex > 0) {
+      var prevId = DATA.days[dayIndex - 1].id;
+      prevBtn.addEventListener('click', function () { location.hash = '#/day/' + prevId; });
+    } else {
+      prevBtn.disabled = true;
+      prevBtn.style.opacity = '0.3';
+      prevBtn.style.cursor = 'default';
+    }
+    footer.appendChild(prevBtn);
+
+    var center = el('div', 'reader-footer-center');
+    var playBtn = el('button', 'audio-play-btn');
+    playBtn.type = 'button';
+    playBtn.setAttribute('aria-label', 'Play recitation');
+
+    var info = el('div', 'audio-info');
+    var count = el('div', 'audio-count', day.items.length + (day.items.length === 1 ? ' dua' : ' duas'));
+    var timer = el('div', 'audio-timer');
+    info.appendChild(count);
+    info.appendChild(timer);
+
+    function updateFooterUi() {
+      if (audioPlayer.dayId === day.id && audioPlayer.isPlaying) {
+        playBtn.innerHTML = ICONS.pause;
+        playBtn.setAttribute('aria-label', 'Pause recitation');
+        count.textContent = 'Reciting · ' + day.items.length + ' duas';
+        if (audioPlayer.audio && !isNaN(audioPlayer.audio.duration) && audioPlayer.audio.duration > 0) {
+          timer.textContent = formatTime(audioPlayer.audio.currentTime) + ' / ' + formatTime(audioPlayer.audio.duration);
+        } else {
+          timer.textContent = 'Streaming…';
+        }
+      } else {
+        playBtn.innerHTML = ICONS.play;
+        playBtn.setAttribute('aria-label', 'Play recitation');
+        count.textContent = day.items.length + (day.items.length === 1 ? ' dua' : ' duas');
+        if (audioPlayer.dayId === day.id && audioPlayer.audio && !isNaN(audioPlayer.audio.duration) && audioPlayer.audio.duration > 0) {
+          timer.textContent = 'Paused (' + formatTime(audioPlayer.audio.currentTime) + ')';
+        } else {
+          timer.textContent = '';
+        }
+      }
+    }
+
+    playBtn.addEventListener('click', function () {
+      if (audioPlayer.dayId === day.id && audioPlayer.audio) {
+        if (audioPlayer.isPlaying) {
+          audioPlayer.audio.pause();
+          audioPlayer.isPlaying = false;
+        } else {
+          audioPlayer.audio.play().catch(function (e) { console.error(e); });
+          audioPlayer.isPlaying = true;
+        }
+        updateFooterUi();
+      } else {
+        if (audioPlayer.audio) {
+          audioPlayer.audio.pause();
+          audioPlayer.audio = null;
+        }
+        audioPlayer.dayId = day.id;
+        var a = new Audio('https://audio.munajaat.app/full/' + day.id + '.mp3');
+        audioPlayer.audio = a;
+        audioPlayer.isPlaying = true;
+        updateFooterUi();
+        a.play().catch(function (e) {
+          console.error(e);
+          audioPlayer.isPlaying = false;
+          updateFooterUi();
+        });
+        a.addEventListener('timeupdate', function () {
+          updateFooterUi();
+        });
+        a.addEventListener('ended', function () {
+          audioPlayer.isPlaying = false;
+          updateFooterUi();
+        });
+        a.addEventListener('error', function () {
+          audioPlayer.isPlaying = false;
+          updateFooterUi();
+          toast('Failed to load audio');
+        });
+      }
+    });
+
+    center.appendChild(playBtn);
+    center.appendChild(info);
+    footer.appendChild(center);
+
+    var nextBtn = iconBtn('arrowRight', 'Next day');
+    if (dayIndex < DATA.days.length - 1) {
+      var nextId = DATA.days[dayIndex + 1].id;
+      nextBtn.addEventListener('click', function () { location.hash = '#/day/' + nextId; });
+    } else {
+      nextBtn.disabled = true;
+      nextBtn.style.opacity = '0.3';
+      nextBtn.style.cursor = 'default';
+    }
+    footer.appendChild(nextBtn);
+
+    updateFooterUi();
+    w.appendChild(footer);
+
     if (scrollTo) {
       setTimeout(function () {
         var t = document.getElementById('item-' + scrollTo);
@@ -459,6 +587,22 @@
     fonts.appendChild(el('div', 'about-heading', 'FONTS'));
     fonts.appendChild(el('p', null, 'Digital Khatt IndoPak v2 (© 2024-2025 Amine Anane, Tarteel Inc.) · Amiri Quran · Noto Nastaliq Urdu · Noto Naskh Arabic — SIL Open Font License'));
     w.appendChild(fonts);
+
+    /* Audio Recitation card */
+    var audio = el('div', 'card credits');
+    audio.appendChild(el('div', 'about-heading', 'AUDIO RECITATION'));
+    var audioRows = [
+      ['Reciter', 'Qari (Islah-ul-Muslmeen) — Slow & Meditative Munajaat-e-Maqbool recitation'],
+      ['Coverage', 'Complete weekly compilation (all 195 Qur\'anic and Prophetic Hadith supplications)'],
+      ['Streaming', 'Fast edge delivery via Cloudflare R2 (audio.munajaat.app)']
+    ];
+    audioRows.forEach(function (r) {
+      var row = el('div', 'about-row');
+      row.appendChild(el('span', 'about-label', r[0]));
+      row.appendChild(el('span', 'about-value', r[1]));
+      audio.appendChild(row);
+    });
+    w.appendChild(audio);
 
     /* Support card */
     var support = el('div', 'card credits support-box');

@@ -10,6 +10,7 @@
 - 🕌 Arabic set in the beautiful **Digital Khatt IndoPak** typeface (classic 13-line mushaf style)
 - 🔍 Full-text search across all three languages
 - 🔖 Bookmarks, adjustable font sizes and line spacing, light & dark themes
+- 🔊 Complete audio recitation (Qari, Islah-ul-Muslmeen) across all 7 days with synchronized playback
 - 📴 Works fully offline once installed (PWA)
 - 🚫 No ads, no accounts, no tracking, no cost — forever
 
@@ -29,5 +30,6 @@ Deploy by serving this folder from any static host.
 - **Code**: MIT — see [LICENSE](LICENSE)
 - **Arabic text**: public domain (Munajaat-e-Maqbool)
 - **Fonts**: SIL Open Font License 1.1 — Digital Khatt IndoPak © 2024–2025 Amine Anane / Tarteel Inc., Amiri, Noto Nastaliq Urdu
+- **Audio**: Qari (Islah-ul-Muslmeen) — Slow & Meditative Munajaat-e-Maqbool recitation
 
 This site is proudly powered by [Netlify](https://www.netlify.com).

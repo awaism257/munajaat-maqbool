@@ -1,23 +1,29 @@
 package org.munajaat.maqbool.ui.reader
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.PauseCircle
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -28,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.munajaat.maqbool.AppViewModel
@@ -50,6 +57,7 @@ fun ReaderScreen(
         }
         val day = content.days[dayIndex]
         val prefs by viewModel.prefs.collectAsState()
+        val audioState by viewModel.audioState.collectAsState()
         val listState = rememberLazyListState()
 
         LaunchedEffect(dayId, initialItem) {
@@ -71,29 +79,83 @@ fun ReaderScreen(
                 )
             },
             bottomBar = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Surface(
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 3.dp,
+                    shadowElevation = 8.dp,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    IconButton(
-                        onClick = { onNavigateDay(content.days[dayIndex - 1].id) },
-                        enabled = dayIndex > 0
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding()
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous day")
-                    }
-                    Text(
-                        text = "${day.items.size} duas",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                    IconButton(
-                        onClick = { onNavigateDay(content.days[dayIndex + 1].id) },
-                        enabled = dayIndex < content.days.lastIndex
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next day")
+                        IconButton(
+                            onClick = { onNavigateDay(content.days[dayIndex - 1].id) },
+                            enabled = dayIndex > 0
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous day")
+                        }
+
+                        // Integrated Audio Controls & Dua Count in the Center
+                        val isCurrentDay = audioState.dayId == day.id
+                        val isPlaying = isCurrentDay && audioState.isPlaying
+                        val isBuffering = isCurrentDay && audioState.isBuffering
+                        val hasStarted = isCurrentDay && (isPlaying || audioState.currentPositionMs > 0)
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            IconButton(
+                                onClick = { viewModel.toggleAudio(day.id) },
+                                modifier = Modifier.size(44.dp)
+                            ) {
+                                if (isBuffering) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        strokeWidth = 2.dp,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = if (isPlaying) Icons.Filled.PauseCircle else Icons.Filled.PlayCircle,
+                                        contentDescription = if (isPlaying) "Pause recitation" else "Play recitation",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(36.dp)
+                                    )
+                                }
+                            }
+
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = if (isPlaying) "Reciting · ${day.items.size} duas" else "${day.items.size} duas",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                if (hasStarted && audioState.durationMs > 0) {
+                                    val curMin = audioState.currentPositionMs / 60000
+                                    val curSec = (audioState.currentPositionMs % 60000) / 1000
+                                    val durMin = audioState.durationMs / 60000
+                                    val durSec = (audioState.durationMs % 60000) / 1000
+                                    Text(
+                                        text = "%d:%02d / %d:%02d".format(curMin, curSec, durMin, durSec),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+
+                        IconButton(
+                            onClick = { onNavigateDay(content.days[dayIndex + 1].id) },
+                            enabled = dayIndex < content.days.lastIndex
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next day")
+                        }
                     }
                 }
             }

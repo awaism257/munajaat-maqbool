@@ -1,8 +1,12 @@
 package org.munajaat.maqbool
 
 import android.app.Application
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +24,14 @@ sealed interface ContentState {
     data class Ready(val content: Content) : ContentState
     data class Error(val message: String) : ContentState
 }
+
+data class AudioPlaybackState(
+    val dayId: String? = null,
+    val isPlaying: Boolean = false,
+    val isBuffering: Boolean = false,
+    val currentPositionMs: Int = 0,
+    val durationMs: Int = 0
+)
 
 data class SearchResult(
     val dayId: String,
@@ -143,4 +155,107 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setArabicLineSpacing(scale: Float) =
         viewModelScope.launch { prefsRepository.setArabicLineSpacing(scale) }
+
+    /* ================= Audio Player ================= */
+    private var mediaPlayer: MediaPlayer? = null
+    private var trackerJob: Job? = null
+    private val _audioState = MutableStateFlow(AudioPlaybackState())
+    val audioState: StateFlow<AudioPlaybackState> = _audioState
+
+    fun toggleAudio(dayId: String) {
+        val current = _audioState.value
+        if (current.dayId == dayId && mediaPlayer != null) {
+            if (current.isPlaying) {
+                try { mediaPlayer?.pause() } catch (_: Exception) {}
+                _audioState.value = current.copy(isPlaying = false)
+            } else {
+                try {
+                    mediaPlayer?.start()
+                    _audioState.value = current.copy(isPlaying = true)
+                    startPositionTracker()
+                } catch (_: Exception) {}
+            }
+        } else {
+            stopAndReleasePlayer()
+            _audioState.value = AudioPlaybackState(dayId = dayId, isBuffering = true)
+            try {
+                val player = MediaPlayer()
+                mediaPlayer = player
+                player.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                val url = "https://audio.munajaat.app/full/$dayId.mp3"
+                player.setDataSource(url)
+                player.setOnPreparedListener { mp ->
+                    if (mediaPlayer == mp) {
+                        try {
+                            mp.start()
+                            _audioState.value = AudioPlaybackState(
+                                dayId = dayId,
+                                isPlaying = true,
+                                isBuffering = false,
+                                currentPositionMs = mp.currentPosition,
+                                durationMs = mp.duration
+                            )
+                            startPositionTracker()
+                        } catch (_: Exception) {
+                            _audioState.value = AudioPlaybackState()
+                        }
+                    }
+                }
+                player.setOnCompletionListener {
+                    _audioState.value = AudioPlaybackState(dayId = dayId, isPlaying = false, currentPositionMs = 0, durationMs = player.duration)
+                }
+                player.setOnErrorListener { _, _, _ ->
+                    _audioState.value = AudioPlaybackState()
+                    true
+                }
+                player.prepareAsync()
+            } catch (e: Exception) {
+                _audioState.value = AudioPlaybackState()
+            }
+        }
+    }
+
+    private fun startPositionTracker() {
+        trackerJob?.cancel()
+        trackerJob = viewModelScope.launch {
+            while (true) {
+                delay(500)
+                val mp = mediaPlayer
+                if (mp != null && _audioState.value.isPlaying) {
+                    try {
+                        val pos = mp.currentPosition
+                        val dur = mp.duration
+                        _audioState.value = _audioState.value.copy(
+                            currentPositionMs = pos,
+                            durationMs = if (dur > 0) dur else _audioState.value.durationMs
+                        )
+                    } catch (_: Exception) {
+                        break
+                    }
+                } else {
+                    break
+                }
+            }
+        }
+    }
+
+    private fun stopAndReleasePlayer() {
+        trackerJob?.cancel()
+        trackerJob = null
+        try {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+        } catch (_: Exception) {}
+        mediaPlayer = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopAndReleasePlayer()
+    }
 }

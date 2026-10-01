@@ -118,6 +118,18 @@ fun CreditsScreen(
                 }
             }
 
+            /* Audio recitation card */
+            Card(colors = appCardColors(), modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    AboutHeading("AUDIO RECITATION")
+                    Text(
+                        "Qari (Islah-ul-Muslmeen) — Slow & Meditative Munajaat-e-Maqbool recitation (islahulmuslimeen.org)",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(top = 14.dp)
+                    )
+                }
+            }
+
             /* Fonts card */
             Card(colors = appCardColors(), modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(20.dp)) {
