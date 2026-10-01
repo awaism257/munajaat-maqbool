@@ -143,6 +143,7 @@ html[data-theme="dark"] .day-card:hover { filter: brightness(1.15); }
 .dua-card {
   position: relative;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  scroll-margin-top: 76px;
 }
 .active-dua-card {
   border-color: var(--primary) !important;

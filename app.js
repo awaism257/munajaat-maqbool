@@ -361,20 +361,24 @@
     a.addEventListener('play', function () {
       audioPlayer.isPlaying = true;
       updateAudioUI();
+      startAutoScrollLoop();
     });
     a.addEventListener('playing', function () {
       audioPlayer.isPlaying = true;
       updateAudioUI();
+      startAutoScrollLoop();
     });
     a.addEventListener('pause', function () {
       audioPlayer.isPlaying = false;
       updateAudioUI();
+      stopAutoScrollLoop();
     });
     a.addEventListener('timeupdate', onAudioTimeUpdate);
     a.addEventListener('ended', function () {
       audioPlayer.isPlaying = false;
       audioPlayer.activeDuaN = null;
       audioPlayer.singleDuaN = null;
+      stopAutoScrollLoop();
       var allActive = document.querySelectorAll('.active-dua-card');
       allActive.forEach(function (c) { c.classList.remove('active-dua-card'); });
       updateAudioUI();
@@ -382,6 +386,7 @@
     a.addEventListener('error', function () {
       audioPlayer.isPlaying = false;
       audioPlayer.singleDuaN = null;
+      stopAutoScrollLoop();
       updateAudioUI();
       toast('Failed to load audio');
     });
@@ -398,6 +403,82 @@
       audioPlayer.isPlaying = false;
       updateAudioUI();
     });
+  }
+
+  /* Progressive smooth auto-scrolling for long verses */
+  var autoScrollRaf = null;
+  var isUserScrolling = false;
+  var userScrollTimer = null;
+
+  function markUserScrolling() {
+    isUserScrolling = true;
+    if (userScrollTimer) clearTimeout(userScrollTimer);
+    userScrollTimer = setTimeout(function () {
+      isUserScrolling = false;
+    }, 2500);
+  }
+
+  window.addEventListener('wheel', markUserScrolling, { passive: true });
+  window.addEventListener('touchmove', markUserScrolling, { passive: true });
+
+  function startAutoScrollLoop() {
+    if (autoScrollRaf) return;
+    function loop() {
+      if (isAudioActive() && audioPlayer.activeDay && audioPlayer.activeDuaN && !isUserScrolling) {
+        var card = document.getElementById('item-' + audioPlayer.activeDuaN);
+        if (card) {
+          var t = audioPlayer.audio.currentTime;
+          var items = audioPlayer.activeDay.items;
+          var currentItem = null;
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].n === audioPlayer.activeDuaN) {
+              currentItem = items[i];
+              break;
+            }
+          }
+          if (currentItem) {
+            var topbar = document.querySelector('.topbar');
+            var topbarHeight = topbar ? topbar.offsetHeight : 60;
+            var visibleTop = topbarHeight + 14;
+            var footerOffset = 84;
+            var visibleHeight = window.innerHeight - visibleTop - footerOffset;
+            var cardHeight = card.offsetHeight;
+            var overflow = cardHeight - visibleHeight;
+
+            if (overflow > 15) {
+              var s = currentItem.audio_start != null ? currentItem.audio_start : 0;
+              var e = currentItem.audio_end != null ? currentItem.audio_end : (s + 10);
+              var dur = Math.max(1, e - s);
+              var p = Math.max(0, Math.min(1, (t - s) / dur));
+
+              var currentY = window.pageYOffset || document.documentElement.scrollTop;
+              var cardRect = card.getBoundingClientRect();
+              var cardAbsoluteTop = cardRect.top + currentY;
+              var targetY = cardAbsoluteTop - visibleTop + (p * (overflow + 20));
+
+              var dy = targetY - currentY;
+              if (Math.abs(dy) > 1.0) {
+                var speed = (Math.abs(dy) > 120) ? 0.08 : 0.04;
+                window.scrollTo(0, currentY + (dy * speed));
+              }
+            }
+          }
+        }
+      }
+      if (isAudioActive()) {
+        autoScrollRaf = requestAnimationFrame(loop);
+      } else {
+        autoScrollRaf = null;
+      }
+    }
+    autoScrollRaf = requestAnimationFrame(loop);
+  }
+
+  function stopAutoScrollLoop() {
+    if (autoScrollRaf) {
+      cancelAnimationFrame(autoScrollRaf);
+      autoScrollRaf = null;
+    }
   }
 
   function onAudioTimeUpdate() {
@@ -454,7 +535,8 @@
     var targetCard = document.getElementById('item-' + duaN);
     if (targetCard) {
       targetCard.classList.add('active-dua-card');
-      targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Scroll to start of card so the top of Arabic text is immediately visible
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
