@@ -2,7 +2,7 @@
 
 **The Accepted Whispers** — a free, ad-free, no-tracking trilingual (Arabic / Urdu / English) dua app, based on the classic collection *Munajaat-e-Maqbool* by Maulana Ashraf Ali Thanwi (rahimahullah). Published as **Sadqah Jaariyah**.
 
-[![Live app](https://img.shields.io/badge/open%20app-munajaat--maqbool.netlify.app-1a5632)](https://munajaat-maqbool.netlify.app)
+[![Live app](https://img.shields.io/badge/open%20app-munajaat.app-1a5632)](https://munajaat.app)
 
 ## Features
 
@@ -15,7 +15,7 @@
 
 ## Install
 
-- **Web / any device**: <https://munajaat-maqbool.netlify.app> — "Add to Home Screen"
+- **Web / any device**: <https://munajaat.app> — "Add to Home Screen"
 - **Android**: available on Google Play (org.munajaat.maqbool)
 - **Windows**: available on the Microsoft Store
 

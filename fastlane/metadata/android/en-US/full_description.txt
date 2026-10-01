@@ -14,6 +14,6 @@ Features:
 
 The app is free and open source (MIT licence). It contains no ads, no analytics, no accounts and no tracking of any kind. It is built as a non-commercial project; an optional Ko-fi link towards hosting and development costs is available on the project page.
 
-Web version: https://munajaat-maqbool.netlify.app
+Web version: https://munajaat.app
 Project page: https://awaism257.github.io/munajaat-maqbool/support.html
 Source code: https://github.com/awaism257/munajaat-maqbool

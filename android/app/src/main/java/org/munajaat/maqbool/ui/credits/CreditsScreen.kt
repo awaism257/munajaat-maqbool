@@ -85,12 +85,12 @@ fun CreditsScreen(
                         modifier = Modifier.padding(top = 8.dp, bottom = 6.dp)
                     )
                     Text(
-                        "munajaat-maqbool.netlify.app",
+                        "munajaat.app",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.secondary,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.clickable {
-                            uriHandler.openUri("https://munajaat-maqbool.netlify.app")
+                            uriHandler.openUri("https://munajaat.app")
                         }
                     )
                 }

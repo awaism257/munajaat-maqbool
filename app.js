@@ -433,8 +433,8 @@
     t.style.color = 'var(--primary)';
     head.appendChild(t);
     head.appendChild(el('p', 'about-tagline', 'Free · No ads · No sign-in · No tracking · Offline'));
-    var site = el('a', 'about-site', 'munajaat-maqbool.netlify.app');
-    site.href = 'https://munajaat-maqbool.netlify.app';
+    var site = el('a', 'about-site', 'munajaat.app');
+    site.href = 'https://munajaat.app';
     head.appendChild(site);
     w.appendChild(head);
 
