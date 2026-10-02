@@ -113,7 +113,16 @@
              color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
   .card p { margin: 8px 0; }
   .card p.dim, .dim { color: var(--text-dim); }
-  .btn { display: inline-block; margin: 6px 8px 0 0; padding: 10px 18px; border-radius: 24px;
+  .btn-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 14px 0 10px;
+  }
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+         margin: 0; padding: 10px 20px; border-radius: 24px;
          background: var(--primary); color: #fff; text-decoration: none; font-weight: 600; font-size: .95rem;
          transition: opacity 0.15s, transform 0.15s; }
   .btn:hover { opacity: 0.92; transform: translateY(-1px); }
@@ -205,12 +214,14 @@
   }
   .app-item-actions {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 12px;
   }
   .app-item-actions .btn {
-    padding: 7px 16px;
-    font-size: 0.85rem;
+    padding: 8px 18px;
+    font-size: 0.88rem;
     margin: 0;
   }
 </style>
@@ -257,10 +268,10 @@
 
   <div class="card">
     <h2>Get the app</h2>
-    <p>
+    <div class="btn-row">
       <a class="btn" href="./index.html">Open the web app</a>
       <a class="btn ghost" href="https://github.com/awaism257/munajaat-maqbool" target="_blank" rel="noopener noreferrer">Source code</a>
-    </p>
+    </div>
     <p class="dim" style="margin-top:10px">Android: available on Google Play (rolling out).
        iPhone: open the web app in Safari → Share → <em>Add to Home Screen</em>.</p>
   </div>
@@ -340,7 +351,9 @@
     <h2>Support this app</h2>
     <p>Munajaat Maqbool is free and contains no adverts. If it has benefited you, you can leave a
        small tip towards hosting and development costs — entirely optional.</p>
-    <p><a class="btn gold" href="https://ko-fi.com/awaismahmood257" target="_blank" rel="noopener noreferrer">♥ Leave a tip on Ko-fi</a></p>
+    <div class="btn-row">
+      <a class="btn gold" href="https://ko-fi.com/awaismahmood257" target="_blank" rel="noopener noreferrer">♥ Leave a tip on Ko-fi</a>
+    </div>
     <p class="dim">The best support is sharing the app with someone who will benefit from it.</p>
   </div>
 
