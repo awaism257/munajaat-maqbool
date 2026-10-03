@@ -25,11 +25,11 @@
 Plain HTML/CSS/JS progressive web app — no frameworks, no build step.
 Deploy by serving this folder from any static host.
 
-## License
+## Licence
 
-- **Code**: MIT — see [LICENSE](LICENSE)
-- **Arabic text**: public domain (Munajaat-e-Maqbool)
+- **Code & English translation**: MIT — see [LICENSE](LICENSE)
+- **Arabic text & Urdu translation**: Public domain (compiled by Mawlana Ashraf Ali Thanawi, d. 1943)
 - **Fonts**: SIL Open Font License 1.1 — Digital Khatt IndoPak © 2024–2025 Amine Anane / Tarteel Inc., Amiri, Noto Nastaliq Urdu
-- **Audio**: Qari (Islah-ul-Muslmeen) — Slow & Meditative Munajaat-e-Maqbool recitation
+- **Audio recitation**: Qari (Islah-ul-Muslimeen) — slow, meditative recitation (islahulmuslimeen.org) distributed for free non-commercial public benefit
 
 This site is proudly powered by [Netlify](https://www.netlify.com).

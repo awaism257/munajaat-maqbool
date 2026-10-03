@@ -845,9 +845,9 @@
     var texts = el('div', 'card credits');
     texts.appendChild(el('div', 'about-heading', 'TEXTS & LICENCES'));
     var rows = [
-      ['Original work', 'Munajaat-e-Maqbool by Mawlana Ashraf Ali Thanawi (rahimahullah) — public domain'],
-      ["Qur'anic supplications", 'ClearQuran translation by Dr. Talal Itani (clearquran.com) — CC BY-ND 4.0'],
-      ['Other supplications', 'Fresh plain-English translation in the ClearQuran register, reviewed against the Urdu translation']
+      ['Original work', 'Munajaat-e-Maqbool compiled by Mawlana Ashraf Ali Thanawi (d. 1943) — public domain'],
+      ['Urdu translation', 'Classical translation by Mawlana Ashraf Ali Thanawi (d. 1943) — public domain'],
+      ['English translation', 'Fresh plain-English translation directly from the Arabic source — MIT Licence']
     ];
     rows.forEach(function (r) {
       var row = el('div', 'about-row');

@@ -1,11 +1,16 @@
 CONTENT NOTICE
 
-The Arabic dua text is from Munajaat-e-Maqbool by Maulana Ashraf Ali
-Thanwi (d. 1943), which is in the public domain.
+The Arabic supplication text is from Munajaat-e-Maqbool compiled by
+Mawlana Ashraf Ali Thanawi (d. 1943), which is in the public domain globally.
 
-The Urdu and English translations are provided as part of this project;
-see assets/munajaat.json. The app is distributed free of charge as
-Sadqah Jaariyah.
+The Urdu translation is the classical translation accompanying the original
+printed booklet by Mawlana Ashraf Ali Thanawi (d. 1943), also in the public
+domain globally.
+
+The English translation is a fresh, independent translation directly from the
+Arabic source prepared specifically for this project, licensed under the MIT
+Licence; see assets/munajaat.json. The app is distributed free of charge as
+Sadaqah Jariyah.
 
 BUNDLED FONTS (each under the SIL Open Font License 1.1, see fonts/):
 - Digital Khatt IndoPak (c) 2024-2025 Amine Anane, Tarteel Inc.

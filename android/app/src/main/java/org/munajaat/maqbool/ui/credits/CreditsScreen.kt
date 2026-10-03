@@ -105,15 +105,15 @@ fun CreditsScreen(
                     AboutHeading("TEXTS & LICENCES")
                     AboutRow(
                         "Original work",
-                        "Munajaat-e-Maqbool by Mawlana Ashraf Ali Thanawi (rahimahullah) — public domain"
+                        "Munajaat-e-Maqbool compiled by Mawlana Ashraf Ali Thanawi (d. 1943) — public domain"
                     )
                     AboutRow(
-                        "Qur'anic supplications",
-                        "ClearQuran translation by Dr. Talal Itani (clearquran.com) — CC BY-ND 4.0"
+                        "Urdu translation",
+                        "Classical translation by Mawlana Ashraf Ali Thanawi (d. 1943) — public domain"
                     )
                     AboutRow(
-                        "Other supplications",
-                        "Fresh plain-English translation in the ClearQuran register, reviewed against the Urdu translation"
+                        "English translation",
+                        "Fresh plain-English translation directly from the Arabic source — MIT Licence"
                     )
                 }
             }

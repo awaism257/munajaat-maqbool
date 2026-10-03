@@ -6,7 +6,7 @@ Before publishing:
 
 - The English translation shipped in this edition is a fresh, independent translation from the Arabic source, reviewed against the public-domain Urdu edition (see `TRANSLATION.md`); it does not reuse the reference app's translation or footnotes. The 91 shipped footnotes are English translations of the booklet's own printed source/instruction notes.
 - Confirm the license for every bundled font. Prefer OFL-licensed fonts and keep their license files in the repository.
-- Add or confirm an open-source license for the application code (Apache-2.0 is a good fit for F-Droid).
+- Add or confirm an open-source licence for the application code (the MIT Licence is used here).
 - If text, font, artwork, or code have different licenses, state that clearly in the README.
 
 Do not upload the app to a store until the content rights are resolved. In addition, obtain a review of the translation by a qualified human scholar before publication.
