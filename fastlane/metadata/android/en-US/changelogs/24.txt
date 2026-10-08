@@ -1,0 +1,1 @@
+v1.3.1: Updated launcher icon with unified light-theme squircle styling and geometric background pattern matching sister apps; licensing and metadata refinements.
