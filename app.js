@@ -867,7 +867,7 @@
     var audio = el('div', 'card credits');
     audio.appendChild(el('div', 'about-heading', 'AUDIO RECITATION'));
     var audioRows = [
-      ['Reciter', 'Qari (Islah-ul-Muslmeen) — Slow & Meditative Munajaat-e-Maqbool recitation'],
+      ['Reciter', 'Qari (Islah-ul-Muslimeen) — Slow & Meditative Munajaat-e-Maqbool recitation'],
       ['Coverage', 'Complete weekly compilation (all 195 Qur\'anic and Prophetic Hadith supplications)'],
       ['Streaming', 'Fast edge delivery via Cloudflare R2 (audio.munajaat.app)']
     ];

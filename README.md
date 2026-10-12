@@ -10,7 +10,7 @@
 - 🕌 Arabic set in the beautiful **Digital Khatt IndoPak** typeface (classic 13-line mushaf style)
 - 🔍 Full-text search across all three languages
 - 🔖 Bookmarks, adjustable font sizes and line spacing, light & dark themes
-- 🔊 Complete audio recitation (Qari, Islah-ul-Muslmeen) across all 7 days with synchronized playback
+- 🔊 Complete audio recitation (Qari, Islah-ul-Muslimeen) across all 7 days with synchronized playback
 - 📴 Works fully offline once installed (PWA)
 - 🚫 No ads, no accounts, no tracking, no cost — forever
 
