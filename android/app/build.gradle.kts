@@ -39,6 +39,8 @@ android {
                 storePassword = signingProps.getProperty("storePassword")
                 keyAlias = signingProps.getProperty("keyAlias")
                 keyPassword = signingProps.getProperty("keyPassword")
+                // Match the v2+v3 schemes of earlier apksigner-signed releases.
+                enableV3Signing = true
             }
         }
     }
@@ -61,6 +63,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    // F-Droid rejects APKs carrying AGP's "Dependency metadata" signing block.
+    dependenciesInfo {
+        includeInApk = false
     }
     packaging {
         resources {
