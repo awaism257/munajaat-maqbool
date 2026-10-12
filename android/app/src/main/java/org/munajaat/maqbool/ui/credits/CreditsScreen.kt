@@ -123,7 +123,7 @@ fun CreditsScreen(
                 Column(modifier = Modifier.padding(20.dp)) {
                     AboutHeading("AUDIO RECITATION")
                     Text(
-                        "Qari (Islah-ul-Muslmeen) — Slow & Meditative Munajaat-e-Maqbool recitation (islahulmuslimeen.org)",
+                        "Qari (Islah-ul-Muslimeen) — Slow & Meditative Munajaat-e-Maqbool recitation (islahulmuslimeen.org)",
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(top = 14.dp)
                     )
