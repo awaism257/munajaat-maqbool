@@ -1,8 +1,23 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
+
+// Optional local release signing. The properties file lives outside the repo
+// (default: ../../Credentials/signing.properties, or $MUNAJAAT_SIGNING_PROPS)
+// and is never committed. Without it — e.g. on F-Droid's build server — the
+// release build is left unsigned, exactly as before.
+val signingPropsFile = System.getenv("MUNAJAAT_SIGNING_PROPS")?.let { file(it) }
+    ?: rootProject.file("../../Credentials/signing.properties")
+val signingProps = Properties().apply {
+    if (signingPropsFile.isFile) signingPropsFile.inputStream().use { load(it) }
+}
+val hasSigning = listOf("storeFile", "storePassword", "keyAlias", "keyPassword")
+    .all { !signingProps.getProperty(it).isNullOrBlank() } &&
+    signingProps.values.none { it.toString().startsWith("PASTE_") }
 
 android {
     namespace = "org.munajaat.maqbool"
@@ -13,12 +28,24 @@ android {
         applicationId = "org.munajaat.maqbool"
         minSdk = 24
         targetSdk = 37
-        versionCode = 24
-        versionName = "1.3.1"
+        versionCode = 25
+        versionName = "1.3.2"
+    }
+
+    signingConfigs {
+        if (hasSigning) {
+            create("release") {
+                storeFile = signingPropsFile.parentFile.resolve(signingProps.getProperty("storeFile"))
+                storePassword = signingProps.getProperty("storePassword")
+                keyAlias = signingProps.getProperty("keyAlias")
+                keyPassword = signingProps.getProperty("keyPassword")
+            }
+        }
     }
 
     buildTypes {
         release {
+            if (hasSigning) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

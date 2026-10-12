@@ -1,0 +1,1 @@
+v1.3.2: Corrected Arabic text in four supplications (Saturday 27 and 30, Thursday 1, Friday 5) and removed an accidentally repeated phrase in Friday 5 (Arabic, English and transliteration).

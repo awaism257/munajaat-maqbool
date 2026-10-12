@@ -19,3 +19,9 @@ android/app/build/
 android/.gradle/
 .gradle/
 .kotlin/
+
+# Signing secrets (must never be committed)
+*.jks
+*.keystore
+signing.properties
+keystore.properties
