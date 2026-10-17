@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'munajaat-maqbool-v49';
+const CACHE_VERSION = 'munajaat-maqbool-v50';
 const PRECACHE = [
   './',
   'index.html',
@@ -19,6 +19,7 @@ const PRECACHE = [
   'assets/books/book-garden-vol1.jpg',
   'assets/books/book-garden-vol2.jpg',
   'assets/books/book-seerah-colouring.jpg',
+  'assets/books/rf-5-star-seal.png',
   'fonts/DigitalKhattIndoPak.woff2',
   'fonts/Amiri-Regular.ttf',
   'fonts/NotoNastaliqUrdu-Regular.ttf'
