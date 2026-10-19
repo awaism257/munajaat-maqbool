@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'munajaat-maqbool-v54';
+const CACHE_VERSION = 'munajaat-maqbool-v55';
 const PRECACHE = [
   './',
   'index.html',
